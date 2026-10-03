@@ -1,0 +1,7 @@
+FROM node:24-bookworm-slim
+WORKDIR /workspace
+COPY infrastructure/docker/web/entrypoint.sh /usr/local/bin/aurevia-web-entrypoint
+COPY infrastructure/docker/web/proxy.conf.json /docker/proxy.conf.json
+RUN chmod +x /usr/local/bin/aurevia-web-entrypoint
+EXPOSE 4200
+ENTRYPOINT ["aurevia-web-entrypoint"]

@@ -85,10 +85,16 @@ health-platform/
 │   └── ADR_TEMPLATE.md
 ├── infrastructure/
 │   └── docker/
+│       ├── api/
+│       ├── web/
 │       └── compose.yml
 ├── scripts/
 │   ├── bootstrap.ps1
-│   └── bootstrap.sh
+│   ├── bootstrap.sh
+│   ├── bootstrap-docker.cmd
+│   ├── bootstrap-docker.sh
+│   ├── docker.cmd
+│   └── docker.sh
 ├── .github/
 │   └── workflows/
 │       └── quality.yml
@@ -153,28 +159,62 @@ The bootstrap script:
 
 The bootstrap scripts intentionally use official framework generators instead of committing an imitation of generated framework source.
 
-## Start Local Infrastructure
+### Docker-first bootstrap
 
-```powershell
-docker compose -f infrastructure/docker/compose.yml up -d
+If you prefer not to install PHP, Composer, Node.js, and npm on the host, or Windows PowerShell execution policy blocks `bootstrap.ps1`, use Docker instead:
+
+```cmd
+scripts\bootstrap-docker.cmd
 ```
 
-Default local services:
+This generates the same Laravel 13 and Angular 22 applications through containerized PHP/Composer and Node tooling. After it completes:
+
+```cmd
+scripts\docker.cmd up
+scripts\docker.cmd migrate
+```
+
+## Docker Development
+
+Aurevia Health supports two local modes: infrastructure-only Docker, or a full Docker application profile.
+
+Start PostgreSQL and Redis only (safe before framework bootstrap):
+
+```cmd
+scripts\docker.cmd infra
+```
+
+After `apps/api` and `apps/web` exist, start Laravel, Horizon, Angular, PostgreSQL, and Redis:
+
+```cmd
+scripts\docker.cmd up
+```
+
+Development endpoints:
 
 | Service | Address |
 |---|---|
+| Angular | `http://localhost:4200` |
+| Laravel | `http://localhost:8000` |
+| Laravel health | `http://localhost:8000/up` |
 | PostgreSQL | `127.0.0.1:5432` |
 | Redis | `127.0.0.1:6379` |
 
-Copy the repository environment example if you want a root-level reference:
+Useful commands:
 
-```powershell
-Copy-Item .env.example .env
+```cmd
+scripts\docker.cmd status
+scripts\docker.cmd migrate
+scripts\docker.cmd test
+scripts\docker.cmd logs
+scripts\docker.cmd down
 ```
 
-Configure `apps/api/.env` with the same database and Redis values after Laravel is generated.
+The Windows `.cmd` helper does not depend on PowerShell script execution policy. See [docs/DOCKER_DEVELOPMENT.md](docs/DOCKER_DEVELOPMENT.md) for details.
 
-## Run the Backend
+## Run Applications on the Host
+
+If you prefer host processes, start only infrastructure with `scripts\docker.cmd infra`, then run:
 
 ```powershell
 cd apps/api
@@ -182,29 +222,11 @@ php artisan migrate
 php artisan serve
 ```
 
-Laravel development API default:
-
-```text
-http://127.0.0.1:8000
-```
-
-For queue processing:
-
-```powershell
-php artisan horizon
-```
-
-## Run the Frontend
+and in another terminal:
 
 ```powershell
 cd apps/web
 npm start
-```
-
-Angular development default:
-
-```text
-http://localhost:4200
 ```
 
 ## First-Party Authentication Direction
@@ -291,6 +313,7 @@ Start with:
 - [MILESTONES_TESTING.md](MILESTONES_TESTING.md) — milestone gates, testing rules, and release evidence.
 - [docs/ADR_TEMPLATE.md](docs/ADR_TEMPLATE.md) — architecture decision record template.
 - [docs/TECH_BASELINE.md](docs/TECH_BASELINE.md) — framework/runtime baseline and upgrade policy.
+- [docs/DOCKER_DEVELOPMENT.md](docs/DOCKER_DEVELOPMENT.md) — local Docker architecture and commands.
 - [SECURITY.md](SECURITY.md) — repository security expectations and release blockers.
 
 ## Initial Definition of Ready

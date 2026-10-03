@@ -35,7 +35,7 @@ Scope:
 - Angular 22;
 - PostgreSQL;
 - Redis;
-- Docker Compose;
+- Docker Compose with infrastructure-only and full-application development profiles;
 - environment conventions;
 - CI;
 - health check;
@@ -48,6 +48,7 @@ Acceptance:
 - Angular starts;
 - database connects;
 - Redis connects;
+- full Docker application profile reports healthy Laravel and Angular services after framework bootstrap;
 - backend tests pass;
 - frontend tests pass;
 - CI runs on pull requests.

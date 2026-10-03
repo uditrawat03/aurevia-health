@@ -49,11 +49,24 @@ The platform should:
 
 ### Infrastructure
 
-- Docker Compose for local dependencies
+- Docker Compose for PostgreSQL and Redis, with an optional `app` profile for Laravel, Horizon, and Angular
+- named container dependency volumes for Laravel `vendor` and Angular `node_modules`
 - GitHub Actions for baseline CI
 - object storage introduced before document-heavy clinical modules
 - search engine introduced only when authorization-safe indexing requirements are defined
 - analytics warehouse introduced separately from the production transactional database
+
+### Local Docker Topology
+
+Local development separates persistent infrastructure from application containers. PostgreSQL and Redis may start independently; the optional `app` profile adds Laravel, Horizon, and Angular. Source code is bind-mounted while Linux dependency trees remain in named volumes.
+
+```text
+Browser :4200 -> Angular -> /api proxy -> Laravel :8000
+                                      |-> PostgreSQL :5432
+                                      |-> Redis :6379 / Horizon
+```
+
+These development images are not production images.
 
 ## 4. System Context
 

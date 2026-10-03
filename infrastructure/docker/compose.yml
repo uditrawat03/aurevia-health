@@ -1,21 +1,26 @@
+name: aurevia-health
+
 services:
   postgres:
     image: postgres:18-alpine
     container_name: aurevia-health-postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: aurevia_health
-      POSTGRES_USER: aurevia_health
-      POSTGRES_PASSWORD: change-me-local-only
+      POSTGRES_DB: ${POSTGRES_DB:-aurevia_health}
+      POSTGRES_USER: ${POSTGRES_USER:-aurevia_health}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+      PGDATA: /var/lib/postgresql/18/docker
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
-      - aurevia_health_postgres:/var/lib/postgresql/data
+      - aurevia_health_postgres:/var/lib/postgresql
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U aurevia_health -d aurevia_health"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-aurevia_health} -d $${POSTGRES_DB:-aurevia_health}"]
       interval: 5s
       timeout: 5s
       retries: 10
+      start_period: 5s
+    networks: [aurevia]
 
   redis:
     image: redis:8-alpine
@@ -23,7 +28,7 @@ services:
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes"]
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
     volumes:
       - aurevia_health_redis:/data
     healthcheck:
@@ -31,7 +36,135 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+      start_period: 5s
+    networks: [aurevia]
+
+  api:
+    profiles: ["app"]
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/api/Dockerfile.dev
+    container_name: aurevia-health-api
+    restart: unless-stopped
+    working_dir: /var/www/html
+    environment:
+      APP_ENV: local
+      APP_URL: http://localhost:${API_PORT:-8000}
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-aurevia_health}
+      DB_USERNAME: ${POSTGRES_USER:-aurevia_health}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SESSION_DOMAIN: localhost
+      SANCTUM_STATEFUL_DOMAINS: localhost:${WEB_PORT:-4200},127.0.0.1:${WEB_PORT:-4200}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ../../apps/api:/var/www/html
+      - aurevia_health_api_vendor:/var/www/html/vendor
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command: ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8000/up"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks: [aurevia]
+
+  horizon:
+    profiles: ["app"]
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/api/Dockerfile.dev
+    container_name: aurevia-health-horizon
+    restart: unless-stopped
+    working_dir: /var/www/html
+    environment:
+      APP_ENV: local
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: ${POSTGRES_DB:-aurevia_health}
+      DB_USERNAME: ${POSTGRES_USER:-aurevia_health}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-change-me-local-only}
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    volumes:
+      - ../../apps/api:/var/www/html
+      - aurevia_health_api_vendor:/var/www/html/vendor
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["php", "artisan", "horizon"]
+    networks: [aurevia]
+
+  web:
+    profiles: ["app"]
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/web/Dockerfile.dev
+    container_name: aurevia-health-web
+    restart: unless-stopped
+    working_dir: /workspace
+
+    environment:
+      NG_ALLOWED_HOSTS: "localhost,127.0.0.1"
+
+    ports:
+      - "${WEB_PORT:-4200}:4200"
+    volumes:
+      - ../../apps/web:/workspace
+      - aurevia_health_web_node_modules:/workspace/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["npm", "start", "--", "--host", "0.0.0.0", "--poll", "1000", "--proxy-config", "/docker/proxy.conf.json"]
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:4200').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks: [aurevia]
+
+  php-tooling:
+    profiles: ["tools"]
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/api/Dockerfile.dev
+    working_dir: /workspace
+    entrypoint: []
+    environment:
+      AUREVIA_SKIP_APP_CHECK: "1"
+    volumes:
+      - ../../apps:/workspace
+    networks: [aurevia]
+
+  node-tooling:
+    profiles: ["tools"]
+    image: node:24-bookworm-slim
+    working_dir: /workspace
+    entrypoint: []
+    volumes:
+      - ../../apps:/workspace
+    networks: [aurevia]
+
+networks:
+  aurevia:
+    name: aurevia-health
 
 volumes:
   aurevia_health_postgres:
   aurevia_health_redis:
+  aurevia_health_api_vendor:
+  aurevia_health_web_node_modules:

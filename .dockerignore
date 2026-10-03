@@ -1,0 +1,15 @@
+.git
+.github
+.idea
+.vscode
+**/.env
+**/.env.*
+!**/.env.example
+**/node_modules
+**/vendor
+**/dist
+**/.angular
+**/coverage
+**/storage/logs
+**/bootstrap/cache/*.php
+*.log
