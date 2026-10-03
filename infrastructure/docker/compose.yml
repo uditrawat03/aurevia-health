@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:18-alpine
+    container_name: aurevia-health-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: aurevia_health
+      POSTGRES_USER: aurevia_health
+      POSTGRES_PASSWORD: change-me-local-only
+    ports:
+      - "5432:5432"
+    volumes:
+      - aurevia_health_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aurevia_health -d aurevia_health"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:8-alpine
+    container_name: aurevia-health-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - aurevia_health_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  aurevia_health_postgres:
+  aurevia_health_redis:
