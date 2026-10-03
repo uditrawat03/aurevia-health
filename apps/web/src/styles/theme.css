@@ -1,23 +1,32 @@
 @theme {
   --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
-  --color-aurevia-50: #eff8ff;
-  --color-aurevia-100: #dbefff;
-  --color-aurevia-200: #bfe2ff;
-  --color-aurevia-300: #93ceff;
-  --color-aurevia-400: #5eb0fb;
-  --color-aurevia-500: #378ff3;
-  --color-aurevia-600: #216fd8;
-  --color-aurevia-700: #1d59af;
-  --color-aurevia-800: #1d4b8a;
-  --color-aurevia-900: #1c406f;
-  --color-aurevia-950: #132846;
+  --color-aurevia-50: #f1f5ff;
+  --color-aurevia-100: #e9eeff;
+  --color-aurevia-200: #d6defd;
+  --color-aurevia-300: #b7c4fa;
+  --color-aurevia-400: #879cf4;
+  --color-aurevia-500: #5f7aed;
+  --color-aurevia-600: #3867e8;
+  --color-aurevia-700: #2d52c8;
+  --color-aurevia-800: #293f9f;
+  --color-aurevia-900: #27387e;
+  --color-aurevia-950: #172033;
+
+  --color-aurevia-ink: #172033;
+  --color-aurevia-canvas: #eef3f7;
+  --color-aurevia-surface: #f8fafc;
+  --color-aurevia-raised: #ffffff;
+  --color-aurevia-aqua: #e4f6f3;
+  --color-aurevia-blue-tint: #e9eeff;
+  --color-aurevia-violet: #f0ebff;
+  --color-aurevia-warm: #fff3df;
 
   --color-clinical-50: #effcf9;
   --color-clinical-100: #d6f7ee;
-  --color-clinical-500: #14b89a;
-  --color-clinical-600: #0d927d;
-  --color-clinical-700: #0f7567;
+  --color-clinical-500: #18b8a3;
+  --color-clinical-600: #0f8f87;
+  --color-clinical-700: #0d746f;
 
   --color-success-50: #f0fdf4;
   --color-success-600: #16a34a;
@@ -30,12 +39,29 @@
   --radius-panel: 0.5rem;
   --radius-dialog: 0.625rem;
 
-  --shadow-panel: 0 1px 2px rgb(15 23 42 / 0.04), 0 1px 3px rgb(15 23 42 / 0.06);
-  --shadow-hover: 0 4px 14px rgb(15 23 42 / 0.08);
+  --shadow-panel: 0 1px 2px rgb(23 32 51 / 0.05), 0 1px 4px rgb(23 32 51 / 0.06);
+  --shadow-hover: 0 8px 22px rgb(23 32 51 / 0.10);
 }
 
 :root {
   color-scheme: light;
+
+  --ah-color-brand-ink: #172033;
+  --ah-color-brand-cobalt: #3867e8;
+  --ah-color-brand-cobalt-strong: #2d52c8;
+  --ah-color-brand-teal: #0f8f87;
+  --ah-color-canvas: #eef3f7;
+  --ah-color-surface: #f8fafc;
+  --ah-color-surface-raised: #ffffff;
+  --ah-color-tint-aqua: #e4f6f3;
+  --ah-color-tint-blue: #e9eeff;
+  --ah-color-tint-violet: #f0ebff;
+  --ah-color-tint-warm: #fff3df;
+  --ah-color-border: #d7e1eb;
+  --ah-color-border-strong: #c3cfdd;
+  --ah-color-text: #172033;
+  --ah-color-text-muted: #637089;
+
   --ah-page-gutter: 1rem;
   --ah-section-gap: 0.875rem;
   --ah-card-padding: 0.875rem;

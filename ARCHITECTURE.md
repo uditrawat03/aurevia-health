@@ -42,7 +42,8 @@ The platform should:
 - strict TypeScript
 - zoneless change detection
 - Angular Router
-- Angular HttpClient
+- typed GraphQL client/transport boundary for first-party application data
+- Angular HttpClient only inside that transport boundary or for approved protocol exceptions
 - signals where appropriate
 - Vitest for unit tests
 - SCSS
@@ -61,7 +62,7 @@ The platform should:
 Local development separates persistent infrastructure from application containers. PostgreSQL and Redis may start independently; the optional `app` profile adds Laravel, Horizon, and Angular. Source code is bind-mounted while Linux dependency trees remain in named volumes.
 
 ```text
-Browser :4200 -> Angular -> /api proxy -> Laravel :8000
+Browser :4200 -> Angular -> /graphql proxy -> Laravel :8000
                                       |-> PostgreSQL :5432
                                       |-> Redis :6379 / Horizon
 ```
@@ -80,7 +81,7 @@ Clinical / Administrative Users
 |          Angular Web          |
 +---------------+---------------+
                 |
-                | HTTPS / JSON API
+                | HTTPS / GraphQL
                 v
 +-------------------------------+
 |         Laravel API           |
@@ -270,20 +271,25 @@ Privacy decisions should be evaluated through policy services so country profile
 
 ## 16. API Architecture
 
-Use `/api/v1/...` for application APIs.
+Use **GraphQL as the default first-party application API boundary**. The canonical product endpoint is `/graphql`.
 
 Guidelines:
 
-- JSON by default;
-- consistent errors;
+- Angular feature code must not call ordinary domain REST endpoints directly;
+- reads use GraphQL queries and state changes use GraphQL mutations;
+- subscriptions are introduced only when a workflow genuinely requires server-pushed updates;
+- schema inputs and payloads are explicitly typed; generic JSON fields require a documented exception;
+- resolvers are thin boundary adapters and contain no business rules, Eloquent chains, or persistence queries;
+- server-side authorization applies to every protected query, mutation, object, and sensitive field;
+- query planning/data loading must prevent N+1 database access;
+- GraphQL errors are structured, preserve correlation IDs, and do not leak sensitive internals;
+- schema evolution is additive by default; breaking fields are deprecated before removal;
+- retried mutations with external side effects require idempotency design;
+- frontend operations are centralized and typed rather than assembled as ad hoc HTTP calls;
 - request correlation IDs;
-- machine-readable validation;
-- standardized pagination;
-- idempotency keys for externally retried writes;
-- server authorization;
 - audit semantics for protected operations.
 
-Healthcare interoperability APIs remain separate from ordinary product REST endpoints.
+GraphQL does not replace protocol-specific HTTP boundaries. Health/readiness endpoints, Sanctum CSRF/session bootstrap, OAuth/OIDC/SAML callbacks, inbound webhooks, signed object-storage handoffs, metrics where required, and FHIR/HL7/DICOM/EDI/partner REST adapters remain separate explicit boundaries. These exceptions must not become a backdoor for ordinary application CRUD.
 
 ## 17. Domain Events
 
@@ -396,7 +402,7 @@ apps/web/src/app/
     └── administration/
 ```
 
-Use lazy-loaded features, typed API boundaries, local state by default, Angular signals where appropriate, and reusable healthcare UI primitives.
+Use lazy-loaded features, typed GraphQL operation boundaries, local state by default, Angular signals where appropriate, and reusable healthcare UI primitives. `HttpClient` belongs inside the GraphQL transport/client layer or an approved protocol exception, not directly inside feature components for domain CRUD.
 
 ## 22. Patient Context UX
 
@@ -492,6 +498,7 @@ Reject changes that:
 - bypass required audit;
 - use exchange standards as internal persistence merely for convenience;
 - couple domains through uncontrolled table access;
+- add ordinary product REST endpoints or direct Angular `/api/...` calls instead of the GraphQL application boundary;
 - introduce critical synchronous external calls without timeout/failure design;
 - call AI providers outside the AI boundary;
 - put real patient data in tests.

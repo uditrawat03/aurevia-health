@@ -30,7 +30,7 @@ Aurevia Health is the official name used for product, architecture, roadmap, mil
 | Cache / queues | Redis 8 |
 | API authentication | Laravel Sanctum, first-party SPA session/cookie model |
 | Local orchestration | Docker Compose |
-| API style | Versioned JSON API, with healthcare interoperability adapters kept separate |
+| API style | GraphQL-first application API at `/graphql`, with protocol/interoperability HTTP adapters kept separate |
 | Architecture | Modular monolith first, event-driven boundaries |
 | CI | GitHub Actions baseline |
 
@@ -307,6 +307,7 @@ chore(ci): add backend static analysis
 
 Start with:
 
+- [CODING_GUIDELINES.md](CODING_GUIDELINES.md) — mandatory coding rules, including the GraphQL-first application boundary.
 - [ARCHITECTURE.md](ARCHITECTURE.md) — system boundaries, modules, security, data and integration architecture.
 - [ROADMAP.md](ROADMAP.md) — product progression beyond version 1.
 - [version_1_milestones.md](version_1_milestones.md) — implementation sequence for the first production-capable foundation.

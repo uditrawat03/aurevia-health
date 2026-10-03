@@ -12,6 +12,36 @@ Aurevia Health uses a compact, safety-oriented application shell designed for de
 - Compact vertical spacing
 - Standalone Angular architecture
 
+## Aurevia visual identity
+
+Aurevia Health should not read as a generic all-white admin dashboard. The product identity uses a light blue-teal navigation rail with strong ink text, a cool tinted workspace, cobalt and teal brand accents, and restrained supporting surface tints. White is reserved primarily for elevated content such as forms, tables, dialogs and other areas where contrast is useful.
+
+The navigation rail must remain clearly distinct from the workspace without relying on a dark background. Brand, navigation and account text use high-contrast ink/slate tones; the selected item uses a teal indicator with a blue-teal tint rather than reversed light text on a dark surface.
+
+| Role | Token | Baseline |
+|---|---|---|
+| Brand ink | `--ah-color-brand-ink` | `#172033` |
+| Brand cobalt | `--ah-color-brand-cobalt` | `#3867e8` |
+| Brand teal | `--ah-color-brand-teal` | `#0f8f87` |
+| Workspace canvas | `--ah-color-canvas` | `#eef3f7` |
+| Default surface | `--ah-color-surface` | `#f8fafc` |
+| Elevated surface | `--ah-color-surface-raised` | `#ffffff` |
+| Aqua tint | `--ah-color-tint-aqua` | `#e4f6f3` |
+| Blue tint | `--ah-color-tint-blue` | `#e9eeff` |
+| Violet tint | `--ah-color-tint-violet` | `#f0ebff` |
+| Warm tint | `--ah-color-tint-warm` | `#fff3df` |
+
+Brand color and clinical status color have different jobs. Cobalt, teal and the supporting tints provide product identity. Green, amber and red remain reserved for success/safe state, attention and danger/critical meaning; they must not be used as decorative brand colors.
+
+The design system provides optional card surface classes for intentional section differentiation:
+
+- `ah-card-tone-aqua`
+- `ah-card-tone-blue`
+- `ah-card-tone-violet`
+- `ah-card-tone-warm`
+
+The overview summary uses the same surface language so the mock demonstrates the palette without requiring clinical status to be encoded by card color.
+
 ## Density rules
 
 The interface deliberately avoids oversized SaaS spacing. The initial targets are:

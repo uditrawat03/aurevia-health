@@ -1,215 +1,151 @@
-<div class="ah-shell">
-  <aside class="ah-sidebar" aria-label="Primary navigation">
-    <div class="ah-sidebar-brand">
-      <div class="ah-brand-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 3v18M3 12h18" />
-        </svg>
-      </div>
+<ah-app-shell>
+  <ah-sidebar [groups]="navGroups" />
+
+  <ah-header>
+    <div ahHeaderContext>
+      <span class="font-semibold text-slate-700">Aurevia Health</span>
+      <span aria-hidden="true">/</span>
+      <span class="truncate">Overview</span>
+    </div>
+
+    <div ahHeaderActions class="flex items-center gap-1.5">
+      <ah-button size="sm" variant="ghost">Help</ah-button>
+      <ah-button size="sm">
+        Search
+        <span class="ah-kbd">⌘K</span>
+      </ah-button>
+    </div>
+  </ah-header>
+
+  <ah-page-header
+    title="Clinical operations"
+    subtitle="Reusable compact UI primitives for Aurevia Health workflows."
+  >
+    <div ahPageActions class="flex items-center gap-1.5">
+      <ah-button>Export</ah-button>
+      <ah-button variant="primary">New patient</ah-button>
+    </div>
+  </ah-page-header>
+
+  <ah-tabs
+    ariaLabel="Overview sections"
+    [activeId]="activeOverviewTab()"
+    [items]="overviewTabs"
+    (activeIdChange)="activeOverviewTab.set($event)"
+  />
+
+  <section class="ah-section ah-grid ah-grid-3" aria-label="Operational summary">
+    <ah-card [hoverable]="true">
+      <div class="ah-stat-label">Active encounters</div>
+      <div class="ah-stat-value">24</div>
+      <div class="mt-1.5"><ah-badge tone="success">Within capacity</ah-badge></div>
+    </ah-card>
+
+    <ah-card [hoverable]="true">
+      <div class="ah-stat-label">Waiting for review</div>
+      <div class="ah-stat-value">8</div>
+      <div class="mt-1.5"><ah-badge tone="warning">Attention</ah-badge></div>
+    </ah-card>
+
+    <ah-card [hoverable]="true">
+      <div class="ah-stat-label">Critical alerts</div>
+      <div class="ah-stat-value">2</div>
+      <div class="mt-1.5"><ah-badge tone="danger">Review now</ah-badge></div>
+    </ah-card>
+  </section>
+
+  <ah-card
+    class="ah-section"
+    title="Reusable UI primitives"
+    subtitle="Angular components now own behavior while Tailwind theme classes own the visual system."
+  >
+    <a ahCardActions class="ah-link" href="#guidelines">View guidelines</a>
+
+    <div class="grid gap-3 lg:grid-cols-2">
       <div>
-        <div class="text-[0.875rem] font-bold tracking-[-0.02em] text-slate-900">Aurevia Health</div>
-        <div class="text-[0.6875rem] font-medium text-slate-500">Clinical workspace</div>
+        <div class="mb-1.5 text-[0.75rem] font-bold text-slate-700">Actions</div>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <ah-button variant="primary">Primary</ah-button>
+          <ah-button>Secondary</ah-button>
+          <ah-button variant="ghost">Ghost</ah-button>
+          <ah-button variant="danger">Danger</ah-button>
+          <ah-button size="sm" variant="primary">Compact</ah-button>
+        </div>
       </div>
+
+      <div>
+        <div class="mb-1.5 text-[0.75rem] font-bold text-slate-700">Status</div>
+        <div class="flex flex-wrap items-center gap-1.5">
+          <ah-badge>Scheduled</ah-badge>
+          <ah-badge tone="success">Complete</ah-badge>
+          <ah-badge tone="warning">Pending</ah-badge>
+          <ah-badge tone="danger">Critical</ah-badge>
+        </div>
+      </div>
+
+      <ah-form-field forId="patient-search" label="Search patient">
+        <input id="patient-search" class="ah-input" type="search" placeholder="Name, MRN or identifier" />
+      </ah-form-field>
+
+      <ah-form-field forId="facility-filter" label="Facility">
+        <select id="facility-filter" class="ah-select">
+          <option>All facilities</option>
+          <option>North Campus</option>
+          <option>Central Clinic</option>
+        </select>
+      </ah-form-field>
+    </div>
+  </ah-card>
+
+  <section class="ah-section">
+    <div class="ah-toolbar">
+      <div>
+        <h2 class="ah-card-title">Recent activity</h2>
+        <div class="mt-0.5 text-[0.75rem] text-slate-500">Dense table rows for operational workflows.</div>
+      </div>
+
+      <ah-tabs
+        ariaLabel="Activity filter"
+        variant="pills"
+        [activeId]="activeActivityTab()"
+        [items]="activityTabs"
+        (activeIdChange)="activeActivityTab.set($event)"
+      />
     </div>
 
-    <nav class="ah-sidebar-nav">
-      <div class="ah-nav-label">Workspace</div>
-      <a class="ah-nav-link is-active" href="#" aria-current="page">
-        <span class="ah-nav-icon" aria-hidden="true">▦</span>
-        Overview
-      </a>
-      <a class="ah-nav-link" href="#">
-        <span class="ah-nav-icon" aria-hidden="true">◉</span>
-        Patients
-      </a>
-      <a class="ah-nav-link" href="#">
-        <span class="ah-nav-icon" aria-hidden="true">◷</span>
-        Scheduling
-      </a>
-      <a class="ah-nav-link" href="#">
-        <span class="ah-nav-icon" aria-hidden="true">✚</span>
-        Encounters
-      </a>
+    <ah-table-shell>
+      <table class="ah-table">
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>Activity</th>
+            <th>Status</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="font-semibold text-slate-800">Scheduling</td>
+            <td>Appointment queue synchronized</td>
+            <td><ah-badge tone="success">Complete</ah-badge></td>
+            <td class="ah-muted">2 min ago</td>
+          </tr>
+          <tr>
+            <td class="font-semibold text-slate-800">Clinical</td>
+            <td>Unsigned documentation requires review</td>
+            <td><ah-badge tone="warning">Pending</ah-badge></td>
+            <td class="ah-muted">7 min ago</td>
+          </tr>
+          <tr>
+            <td class="font-semibold text-slate-800">Interoperability</td>
+            <td>Inbound message processing operational</td>
+            <td><ah-badge>Monitoring</ah-badge></td>
+            <td class="ah-muted">12 min ago</td>
+          </tr>
+        </tbody>
+      </table>
+    </ah-table-shell>
+  </section>
 
-      <div class="ah-nav-label">Operations</div>
-      <a class="ah-nav-link" href="#">
-        <span class="ah-nav-icon" aria-hidden="true">≡</span>
-        Work queues
-      </a>
-      <a class="ah-nav-link" href="#">
-        <span class="ah-nav-icon" aria-hidden="true">⌁</span>
-        Interoperability
-      </a>
-      <a class="ah-nav-link" href="#">
-        <span class="ah-nav-icon" aria-hidden="true">⚙</span>
-        Administration
-      </a>
-    </nav>
-
-    <div class="border-t border-slate-200 p-2.5">
-      <a class="ah-nav-link" href="#">
-        <span class="grid h-6 w-6 place-items-center rounded-full bg-slate-200 text-[0.625rem] font-bold text-slate-700">UR</span>
-        <span class="min-w-0">
-          <span class="block truncate text-[0.75rem] font-semibold text-slate-800">Development User</span>
-          <span class="block truncate text-[0.6875rem] font-medium text-slate-500">Local environment</span>
-        </span>
-      </a>
-    </div>
-  </aside>
-
-  <div class="ah-main">
-    <header class="ah-topbar">
-      <div class="flex min-w-0 items-center gap-2 text-[0.75rem] text-slate-500">
-        <span class="font-semibold text-slate-700">Aurevia Health</span>
-        <span aria-hidden="true">/</span>
-        <span class="truncate">Overview</span>
-      </div>
-
-      <div class="flex items-center gap-1.5">
-        <button class="ah-btn ah-btn-ghost ah-btn-sm" type="button">Help</button>
-        <button class="ah-btn ah-btn-secondary ah-btn-sm" type="button">Search <span class="ah-kbd">⌘K</span></button>
-      </div>
-    </header>
-
-    <main class="ah-content">
-      <section class="ah-page-header">
-        <div>
-          <h1 class="ah-page-title">Clinical operations</h1>
-          <p class="ah-page-subtitle">Compact design foundation for Aurevia Health workflows.</p>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <button class="ah-btn ah-btn-secondary" type="button">Export</button>
-          <button class="ah-btn ah-btn-primary" type="button">New patient</button>
-        </div>
-      </section>
-
-      <nav class="ah-tabs" aria-label="Overview sections">
-        <button class="ah-tab is-active" type="button" aria-selected="true">Overview</button>
-        <button class="ah-tab" type="button" aria-selected="false">Activity</button>
-        <button class="ah-tab" type="button" aria-selected="false">Work queues <span class="ah-badge ah-badge-info">8</span></button>
-        <button class="ah-tab" type="button" aria-selected="false">Audit</button>
-      </nav>
-
-      <section class="ah-section ah-grid ah-grid-3" aria-label="Operational summary">
-        <article class="ah-card ah-card-hover">
-          <div class="ah-card-body">
-            <div class="ah-stat-label">Active encounters</div>
-            <div class="ah-stat-value">24</div>
-            <div class="mt-1.5"><span class="ah-badge ah-badge-success">Within capacity</span></div>
-          </div>
-        </article>
-        <article class="ah-card ah-card-hover">
-          <div class="ah-card-body">
-            <div class="ah-stat-label">Waiting for review</div>
-            <div class="ah-stat-value">8</div>
-            <div class="mt-1.5"><span class="ah-badge ah-badge-warning">Attention</span></div>
-          </div>
-        </article>
-        <article class="ah-card ah-card-hover">
-          <div class="ah-card-body">
-            <div class="ah-stat-label">Critical alerts</div>
-            <div class="ah-stat-value">2</div>
-            <div class="mt-1.5"><span class="ah-badge ah-badge-danger">Review now</span></div>
-          </div>
-        </article>
-      </section>
-
-      <section class="ah-section ah-card">
-        <div class="ah-card-header">
-          <div>
-            <h2 class="ah-card-title">UI primitives</h2>
-            <div class="mt-0.5 text-[0.75rem] text-slate-500">Buttons, links, fields, statuses and compact density.</div>
-          </div>
-          <a class="ah-link" href="#">View guidelines</a>
-        </div>
-        <div class="ah-card-body">
-          <div class="grid gap-3 lg:grid-cols-2">
-            <div>
-              <div class="mb-1.5 text-[0.75rem] font-bold text-slate-700">Actions</div>
-              <div class="flex flex-wrap items-center gap-1.5">
-                <button class="ah-btn ah-btn-primary" type="button">Primary</button>
-                <button class="ah-btn ah-btn-secondary" type="button">Secondary</button>
-                <button class="ah-btn ah-btn-ghost" type="button">Ghost</button>
-                <button class="ah-btn ah-btn-danger" type="button">Danger</button>
-                <button class="ah-btn ah-btn-primary ah-btn-sm" type="button">Compact</button>
-              </div>
-            </div>
-
-            <div>
-              <div class="mb-1.5 text-[0.75rem] font-bold text-slate-700">Status</div>
-              <div class="flex flex-wrap items-center gap-1.5">
-                <span class="ah-badge ah-badge-info">Scheduled</span>
-                <span class="ah-badge ah-badge-success">Complete</span>
-                <span class="ah-badge ah-badge-warning">Pending</span>
-                <span class="ah-badge ah-badge-danger">Critical</span>
-              </div>
-            </div>
-
-            <label>
-              <span class="ah-label">Search patient</span>
-              <input class="ah-input" type="search" placeholder="Name, MRN or identifier" />
-            </label>
-
-            <label>
-              <span class="ah-label">Facility</span>
-              <select class="ah-select">
-                <option>All facilities</option>
-                <option>North Campus</option>
-                <option>Central Clinic</option>
-              </select>
-            </label>
-          </div>
-        </div>
-      </section>
-
-      <section class="ah-section">
-        <div class="ah-toolbar">
-          <div>
-            <h2 class="ah-card-title">Recent activity</h2>
-            <div class="mt-0.5 text-[0.75rem] text-slate-500">Dense table rows for operational workflows.</div>
-          </div>
-          <div class="ah-tabs ah-tabs-pills" aria-label="Activity filter">
-            <button class="ah-tab is-active" type="button" aria-selected="true">All</button>
-            <button class="ah-tab" type="button" aria-selected="false">Clinical</button>
-            <button class="ah-tab" type="button" aria-selected="false">Admin</button>
-          </div>
-        </div>
-
-        <div class="ah-table-wrap">
-          <table class="ah-table">
-            <thead>
-              <tr>
-                <th>Area</th>
-                <th>Activity</th>
-                <th>Status</th>
-                <th>Updated</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="font-semibold text-slate-800">Scheduling</td>
-                <td>Appointment queue synchronized</td>
-                <td><span class="ah-badge ah-badge-success">Complete</span></td>
-                <td class="ah-muted">2 min ago</td>
-              </tr>
-              <tr>
-                <td class="font-semibold text-slate-800">Clinical</td>
-                <td>Unsigned documentation requires review</td>
-                <td><span class="ah-badge ah-badge-warning">Pending</span></td>
-                <td class="ah-muted">7 min ago</td>
-              </tr>
-              <tr>
-                <td class="font-semibold text-slate-800">Interoperability</td>
-                <td>Inbound message processing operational</td>
-                <td><span class="ah-badge ah-badge-info">Monitoring</span></td>
-                <td class="ah-muted">12 min ago</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <router-outlet />
-    </main>
-  </div>
-</div>
+  <router-outlet />
+</ah-app-shell>
