@@ -288,6 +288,16 @@ This foundation intentionally does not implement MFA, enterprise OIDC/SAML, pass
 
 See [docs/IDENTITY_AUTHORIZATION.md](docs/IDENTITY_AUTHORIZATION.md) for the session flow, role/permission matrix, facility scoping, GraphQL operations, test expectations, and current limitations.
 
+## Audit Foundation
+
+V1-M3 adds structured, append-oriented `audit_events` for the protected organization boundary. Authorization decisions persist actor, organization/facility scope, generic resource context, action, `ALLOWED`/`DENIED` outcome, correlation ID, and occurrence time. The schema also reserves nullable patient context for V1-M4 without embedding patient data in generic audit payloads.
+
+Denied GraphQL mutation decisions are deferred in request context and flushed after Lighthouse completes or rolls back its transactional mutation. This preserves security evidence for rejected writes without disabling transaction safety. Allowed authorization evidence participates in the request transaction, and organization creation records its authenticated onboarding event explicitly.
+
+The `auditEvents` GraphQL viewer is restricted to organization-wide `OWNER` and `ADMIN` memberships through the new `VIEW_AUDIT` permission. The viewer is itself audited and returns only the selected organization's newest evidence, with a bounded maximum of 100 rows per request.
+
+See [docs/AUDIT_FOUNDATION.md](docs/AUDIT_FOUNDATION.md) for the audit schema, denial durability model, restricted viewer, patient-context extension point, and verification requirements.
+
 ## Development Principles
 
 ### 1. Core before country specifics
@@ -361,6 +371,8 @@ Start with:
 - [docs/TECH_BASELINE.md](docs/TECH_BASELINE.md) — framework/runtime baseline and upgrade policy.
 - [docs/DOCKER_DEVELOPMENT.md](docs/DOCKER_DEVELOPMENT.md) — local Docker architecture and commands.
 - [docs/GRAPHQL_BACKEND.md](docs/GRAPHQL_BACKEND.md) — GraphQL server, resolver, security, and testing conventions.
+- [docs/IDENTITY_AUTHORIZATION.md](docs/IDENTITY_AUTHORIZATION.md) — session authentication, memberships, role/facility authorization, and ABAC extension points.
+- [docs/AUDIT_FOUNDATION.md](docs/AUDIT_FOUNDATION.md) — structured audit evidence, denial durability, and restricted audit viewing.
 - [SECURITY.md](SECURITY.md) — repository security expectations and release blockers.
 
 ## Initial Definition of Ready

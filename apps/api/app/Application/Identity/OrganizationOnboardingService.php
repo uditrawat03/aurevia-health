@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Application\Identity;
 
+use App\Application\Audit\AuditService;
 use App\Application\Organization\OrganizationService;
 use App\Domains\Identity\Enums\OrganizationRole;
 use App\Domains\Organization\Data\CreateOrganizationData;
@@ -17,6 +18,7 @@ final readonly class OrganizationOnboardingService
         private OrganizationMembershipService $memberships,
         private OrganizationAuthorizationService $authorization,
         private DatabaseManager $database,
+        private AuditService $audit,
     ) {}
 
     public function createOrganization(CreateOrganizationData $data): OrganizationData
@@ -32,6 +34,11 @@ final readonly class OrganizationOnboardingService
                 role: OrganizationRole::OWNER,
                 allFacilities: true,
                 facilityIds: [],
+            );
+
+            $this->audit->recordOrganizationCreated(
+                actorUserId: $userId,
+                organizationId: $organization->id,
             );
 
             return $organization;

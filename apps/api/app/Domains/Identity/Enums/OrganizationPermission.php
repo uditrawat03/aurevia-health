@@ -11,4 +11,5 @@ enum OrganizationPermission: string
     case VIEW_SETTINGS = 'VIEW_SETTINGS';
     case MANAGE_SETTINGS = 'MANAGE_SETTINGS';
     case MANAGE_MEMBERSHIPS = 'MANAGE_MEMBERSHIPS';
+    case VIEW_AUDIT = 'VIEW_AUDIT';
 }

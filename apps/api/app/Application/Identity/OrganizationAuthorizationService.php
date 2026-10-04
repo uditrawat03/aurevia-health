@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Application\Identity;
 
+use App\Application\Audit\AuditService;
+use App\Domains\Audit\Enums\AuditOutcome;
 use App\Domains\Identity\Authorization\OrganizationAccessPolicy;
 use App\Domains\Identity\Data\AuthenticatedUserData;
 use App\Domains\Identity\Data\OrganizationAccessContext;
@@ -23,6 +25,7 @@ final readonly class OrganizationAuthorizationService
         private AuthFactory $auth,
         private IdentityRepo $identities,
         private OrganizationAccessPolicy $policy,
+        private AuditService $audit,
     ) {}
 
     public function currentUser(): AuthenticatedUserData
@@ -58,19 +61,36 @@ final readonly class OrganizationAuthorizationService
         ?string $facilityId = null,
         bool $requiresAllFacilities = false,
     ): OrganizationMembershipData {
+        $actorUserId = $this->authenticatedUserId();
         $membership = $this->identities->membershipForUserOrganization(
-            $this->authenticatedUserId(),
+            $actorUserId,
             $organizationId,
         );
 
         $hasActiveMembership = $membership !== null
             && $membership->status === MembershipStatus::ACTIVE->value;
         if (! $hasActiveMembership) {
+            $this->audit->recordAuthorizationDecision(
+                actorUserId: $actorUserId,
+                organizationId: $organizationId,
+                permission: $permission,
+                facilityId: $facilityId,
+                outcome: AuditOutcome::DENIED,
+            );
+
             throw new AuthorizationException('This action is unauthorized.');
         }
 
         $role = OrganizationRole::tryFrom($membership->role);
         if ($role === null) {
+            $this->audit->recordAuthorizationDecision(
+                actorUserId: $actorUserId,
+                organizationId: $organizationId,
+                permission: $permission,
+                facilityId: $facilityId,
+                outcome: AuditOutcome::DENIED,
+            );
+
             throw new LogicException('Organization membership contains an unsupported role.');
         }
 
@@ -84,8 +104,24 @@ final readonly class OrganizationAuthorizationService
         ));
 
         if (! $allowed) {
+            $this->audit->recordAuthorizationDecision(
+                actorUserId: $actorUserId,
+                organizationId: $organizationId,
+                permission: $permission,
+                facilityId: $facilityId,
+                outcome: AuditOutcome::DENIED,
+            );
+
             throw new AuthorizationException('This action is unauthorized.');
         }
+
+        $this->audit->recordAuthorizationDecision(
+            actorUserId: $actorUserId,
+            organizationId: $organizationId,
+            permission: $permission,
+            facilityId: $facilityId,
+            outcome: AuditOutcome::ALLOWED,
+        );
 
         return $membership;
     }

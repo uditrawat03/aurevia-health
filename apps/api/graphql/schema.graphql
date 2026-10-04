@@ -5,3 +5,4 @@ type Query {
 #import system/*.graphql
 #import organization/*.graphql
 #import identity/*.graphql
+#import audit/*.graphql

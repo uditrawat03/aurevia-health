@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\GraphQL\Execution\CorrelationIdErrorHandler;
 use App\Http\Middleware\EnsureCorrelationId;
+use App\Http\Middleware\FlushPendingAuditEvents;
 use GraphQL\Validator\Rules\DisableIntrospection;
 use Nuwave\Lighthouse\Execution\AuthenticationErrorHandler;
 use Nuwave\Lighthouse\Execution\AuthorizationErrorHandler;
@@ -18,6 +19,7 @@ return [
         'name' => 'graphql',
         'middleware' => [
             EnsureCorrelationId::class,
+            FlushPendingAuditEvents::class,
             'web',
             AcceptJson::class,
             AttemptAuthentication::class,

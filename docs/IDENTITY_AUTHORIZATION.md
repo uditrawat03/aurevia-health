@@ -49,13 +49,13 @@ A user may have one membership per organization. A membership may grant all-faci
 
 Initial roles:
 
-| Role | Organization view | Organization manage | Settings view | Settings manage | Membership manage |
-|---|---:|---:|---:|---:|---:|
-| `OWNER` | yes | yes | yes | yes | yes |
-| `ADMIN` | yes | yes | yes | yes | yes |
-| `CLINICIAN` | yes | no | yes | no | no |
-| `STAFF` | yes | no | yes | no | no |
-| `VIEWER` | yes | no | yes | no | no |
+| Role | Organization view | Organization manage | Settings view | Settings manage | Membership manage | Audit view |
+|---|---:|---:|---:|---:|---:|---:|
+| `OWNER` | yes | yes | yes | yes | yes | yes |
+| `ADMIN` | yes | yes | yes | yes | yes | yes |
+| `CLINICIAN` | yes | no | yes | no | no | no |
+| `STAFF` | yes | no | yes | no | no | no |
+| `VIEWER` | yes | no | yes | no | no | no |
 
 The role matrix is only the RBAC portion of the decision. `OrganizationAccessPolicy` also evaluates facility scope and whether an operation requires all-facility authority. That contract is the Version 1 ABAC extension point.
 
@@ -151,9 +151,10 @@ The boundary explicitly tests:
 - allowed selected-facility access;
 - unselected-facility denial;
 - revoked-membership denial;
-- role plus facility-scope policy behavior.
+- role plus facility-scope policy behavior;
+- durable structured audit evidence for allowed organization access and denied authorization decisions.
 
-Authorization errors continue through the GraphQL correlation-ID error handler, so denials remain traceable without exposing internal persistence details.
+Authorization errors continue through the GraphQL correlation-ID error handler. V1-M3 also persists the actor, organization/resource scope, action, outcome, correlation ID, and timestamp. Denied mutation decisions are flushed after GraphQL transaction rollback so the security evidence is not lost with the rejected write.
 
 ## Current Limits
 
@@ -163,10 +164,9 @@ This is an authorization foundation, not the final enterprise identity program. 
 - OIDC or SAML enterprise federation;
 - password recovery/user provisioning workflows;
 - remote session inventory or revoke-other-session controls;
-- purpose-of-use, consent, patient relationship, care-team, or break-glass attributes;
-- V1-M3 structured security/audit event persistence.
+- purpose-of-use, consent, patient relationship, care-team, or break-glass attributes.
 
-Membership revocation immediately removes organization authorization on the next request. The broader audit evidence for authentication, protected reads/writes, and denied access is introduced in V1-M3.
+Membership revocation immediately removes organization authorization on the next request. V1-M3 now persists organization-scoped authorization evidence and exposes it only to all-facility owners and administrators. Authentication-specific login/logout event vocabulary and patient-scoped audit context can extend the same audit boundary as later milestones introduce those requirements.
 
 ## Verification
 

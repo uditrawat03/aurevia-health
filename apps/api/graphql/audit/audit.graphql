@@ -1,0 +1,51 @@
+"Outcome of an authorization-sensitive audited operation."
+enum AuditOutcome {
+    ALLOWED
+    DENIED
+}
+
+"Stable Version 1 action vocabulary for protected organization operations."
+enum AuditAction {
+    CREATE_ORGANIZATION
+    VIEW_ORGANIZATION
+    MANAGE_ORGANIZATION
+    VIEW_SETTINGS
+    MANAGE_SETTINGS
+    MANAGE_MEMBERSHIPS
+    VIEW_AUDIT
+}
+
+"Generic resource classification kept independent from country-specific identifiers."
+enum AuditResourceType {
+    ORGANIZATION
+    FACILITY
+    OPERATIONAL_SETTINGS
+    ORGANIZATION_MEMBERSHIP
+    AUDIT_EVENT
+}
+
+"Append-oriented evidence for a protected operation or security-relevant denial."
+type AuditEvent {
+    id: ID!
+    actorUserId: ID
+    organizationId: ID
+    facilityId: ID
+    patientId: ID
+    resourceType: AuditResourceType!
+    resourceId: ID
+    action: AuditAction!
+    outcome: AuditOutcome!
+    correlationId: String!
+    occurredAt: String!
+}
+
+input AuditEventsInput {
+    organizationId: ID!
+    limit: Int = 50
+}
+
+extend type Query {
+    auditEvents(input: AuditEventsInput!): [AuditEvent!]!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\AuditEventsQuery")
+}

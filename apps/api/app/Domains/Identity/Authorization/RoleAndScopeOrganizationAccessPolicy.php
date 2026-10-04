@@ -43,6 +43,7 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::VIEW_SETTINGS,
                 OrganizationPermission::MANAGE_SETTINGS,
                 OrganizationPermission::MANAGE_MEMBERSHIPS,
+                OrganizationPermission::VIEW_AUDIT,
             ],
             OrganizationRole::CLINICIAN, OrganizationRole::STAFF, OrganizationRole::VIEWER => [
                 OrganizationPermission::VIEW_ORGANIZATION,
