@@ -210,6 +210,10 @@ Department
 
 Configuration must distinguish overridable operational preferences from regulatory/security controls that lower scopes cannot weaken. Safety- and compliance-relevant configuration changes should be auditable.
 
+V1-M1 implements this hierarchy with typed locale, IANA timezone, and week-start overrides. Health systems remain optional organization groupings rather than an inheritance layer; configuration precedence stays global → country profile → organization → facility → department.
+
+Country-profile selection is server controlled. Organizations persist both the selected profile code and profile version so later profile additions cannot silently change existing tenant behavior. A `CORE` profile provides country-neutral defaults for country codes without a dedicated implementation.
+
 ## 10. Identity and Authentication
 
 Support progression toward local development identities, enterprise OIDC, SAML where needed, MFA, WebAuthn/passkeys, emergency account controls, and session revocation.

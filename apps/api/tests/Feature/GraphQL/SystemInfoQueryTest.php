@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Tests\Feature\GraphQL;
 
 use App\Support\CorrelationId;
-use Illuminate\Testing\TestResponse;
+use Tests\Support\InteractsWithGraphQL;
 use Tests\TestCase;
 
 final class SystemInfoQueryTest extends TestCase
 {
-    private const string CSRF_TOKEN = 'aurevia-test-csrf-token';
+    use InteractsWithGraphQL;
 
     private const string SYSTEM_INFO_QUERY = <<<'GRAPHQL'
         query SystemInfo {
@@ -84,16 +84,5 @@ final class SystemInfoQueryTest extends TestCase
         } finally {
             $this->app->detectEnvironment(static fn (): string => 'testing');
         }
-    }
-
-    private function postGraphQL(string $query, string $correlationId): TestResponse
-    {
-        return $this
-            ->withSession(['_token' => self::CSRF_TOKEN])
-            ->withHeaders([
-                'X-CSRF-TOKEN' => self::CSRF_TOKEN,
-                CorrelationId::HEADER => $correlationId,
-            ])
-            ->postJson('/graphql', ['query' => $query]);
     }
 }

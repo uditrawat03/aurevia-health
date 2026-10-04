@@ -3,3 +3,4 @@ type Query {
 }
 
 #import system/*.graphql
+#import organization/*.graphql

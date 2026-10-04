@@ -1,0 +1,174 @@
+"The day considered the start of an operational week."
+enum WeekStart {
+    MONDAY
+    TUESDAY
+    WEDNESDAY
+    THURSDAY
+    FRIDAY
+    SATURDAY
+    SUNDAY
+}
+
+"A configurable organization hierarchy scope."
+enum ConfigurationScope {
+    ORGANIZATION
+    FACILITY
+    DEPARTMENT
+}
+
+"The layer that supplied an effective operational setting."
+enum ConfigurationSource {
+    GLOBAL_DEFAULT
+    COUNTRY_PROFILE
+    ORGANIZATION
+    FACILITY
+    DEPARTMENT
+}
+
+"Optional country-neutral operational overrides. Null means inherit from the next broader scope."
+type OperationalSettingsOverride {
+    locale: String
+    timezone: String
+    weekStartsOn: WeekStart
+}
+
+"Input that replaces all overrides for a configurable scope. Omitted or null fields clear that override."
+input OperationalSettingsOverrideInput {
+    locale: String
+    timezone: String
+    weekStartsOn: WeekStart
+}
+
+"Server-selected country-profile identity pinned to an organization."
+type CountryProfileMetadata {
+    countryCode: String!
+    profileCode: String!
+    version: String!
+}
+
+"A healthcare health-system grouping owned by an organization."
+type HealthSystem {
+    id: ID!
+    organizationId: ID!
+    name: String!
+    code: String!
+}
+
+"A facility owned by one organization and optionally grouped under a health system."
+type Facility {
+    id: ID!
+    organizationId: ID!
+    healthSystemId: ID
+    name: String!
+    code: String!
+    settings: OperationalSettingsOverride!
+    departments: [Department!]!
+}
+
+"A department contained by one facility."
+type Department {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    name: String!
+    code: String!
+    settings: OperationalSettingsOverride!
+}
+
+"A country-neutral healthcare organization."
+type Organization {
+    id: ID!
+    name: String!
+    slug: String!
+    countryCode: String!
+    countryProfileCode: String!
+    countryProfileVersion: String!
+    settings: OperationalSettingsOverride!
+    healthSystems: [HealthSystem!]!
+    facilities: [Facility!]!
+}
+
+"Effective operational settings after configuration inheritance is applied."
+type ResolvedOperationalSettings {
+    locale: String!
+    timezone: String!
+    weekStartsOn: WeekStart!
+    localeSource: ConfigurationSource!
+    timezoneSource: ConfigurationSource!
+    weekStartsOnSource: ConfigurationSource!
+    countryProfile: CountryProfileMetadata!
+}
+
+"Result of replacing operational overrides on a hierarchy scope."
+type UpdatedOperationalSettings {
+    scope: ConfigurationScope!
+    scopeId: ID!
+    settings: OperationalSettingsOverride!
+}
+
+input CreateOrganizationInput {
+    name: String!
+    slug: String!
+    countryCode: String!
+    settings: OperationalSettingsOverrideInput
+}
+
+input CreateHealthSystemInput {
+    organizationId: ID!
+    name: String!
+    code: String!
+}
+
+input CreateFacilityInput {
+    organizationId: ID!
+    healthSystemId: ID
+    name: String!
+    code: String!
+    settings: OperationalSettingsOverrideInput
+}
+
+input CreateDepartmentInput {
+    organizationId: ID!
+    facilityId: ID!
+    name: String!
+    code: String!
+    settings: OperationalSettingsOverrideInput
+}
+
+input ResolveOperationalSettingsInput {
+    organizationId: ID!
+    facilityId: ID
+    departmentId: ID
+}
+
+input UpdateOperationalSettingsInput {
+    organizationId: ID!
+    scope: ConfigurationScope!
+    scopeId: ID!
+    settings: OperationalSettingsOverrideInput!
+}
+
+extend type Query {
+    organization(id: ID!): Organization!
+        @field(resolver: "App\\GraphQL\\Queries\\OrganizationQuery")
+
+    resolvedOperationalSettings(input: ResolveOperationalSettingsInput!): ResolvedOperationalSettings!
+        @field(resolver: "App\\GraphQL\\Queries\\ResolvedOperationalSettingsQuery")
+}
+
+type Mutation {
+    createOrganization(input: CreateOrganizationInput!): Organization!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateOrganizationMutation")
+
+    createHealthSystem(input: CreateHealthSystemInput!): HealthSystem!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateHealthSystemMutation")
+
+    createFacility(input: CreateFacilityInput!): Facility!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateFacilityMutation")
+
+    createDepartment(input: CreateDepartmentInput!): Department!
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateDepartmentMutation")
+
+    updateOperationalSettings(input: UpdateOperationalSettingsInput!): UpdatedOperationalSettings!
+        @field(resolver: "App\\GraphQL\\Mutations\\UpdateOperationalSettingsMutation")
+}

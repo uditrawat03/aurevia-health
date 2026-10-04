@@ -249,6 +249,16 @@ query {
 
 See [docs/GRAPHQL_BACKEND.md](docs/GRAPHQL_BACKEND.md) for resolver, security, correlation-ID, and schema conventions.
 
+## Organization and Country Profile Foundation
+
+V1-M1 adds the country-neutral organization hierarchy (`Organization → Health System / Facility → Department`), internal ULID identifiers, server-controlled country-profile selection with pinned profile versions, typed operational setting inheritance, and correlation-linked configuration-change evidence.
+
+Configuration resolves through global defaults, country profile, organization, facility, and department. The initial country profiles are India, United Kingdom, United States, plus a `CORE` fallback for other country codes; adding a country profile does not require a fork of the generic organization schema.
+
+The organization boundary remains GraphQL-first. V1-M1 adds typed queries and mutations for organization hierarchy creation, hierarchy reads, resolved settings, and operational setting updates. Authentication and authorization of these administration mutations are intentionally deferred to V1-M2, so this milestone must not be treated as a standalone production administration API.
+
+See [docs/ORGANIZATION_COUNTRY_PROFILE.md](docs/ORGANIZATION_COUNTRY_PROFILE.md) for the hierarchy, profile resolution, configuration precedence, GraphQL contract, isolation behavior, audit evidence, and current security limitation.
+
 ## Run Applications on the Host
 
 If you prefer host processes, start only infrastructure with `scripts\docker.cmd infra`, then run:
