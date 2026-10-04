@@ -27,6 +27,16 @@ return [
     ],
     'guards' => ['web'],
     'schema_path' => base_path('graphql/schema.graphql'),
+    'query_cache' => [
+        'enable' => env(
+            'LIGHTHOUSE_QUERY_CACHE_ENABLE',
+            ! in_array((string) env('APP_ENV', 'production'), ['local', 'testing'], true),
+        ),
+        'mode' => env('LIGHTHOUSE_QUERY_CACHE_MODE', 'opcache'),
+        'opcache_path' => env('LIGHTHOUSE_QUERY_CACHE_OPCACHE_PATH', base_path('bootstrap/cache')),
+        'store' => env('LIGHTHOUSE_QUERY_CACHE_STORE'),
+        'ttl' => env('LIGHTHOUSE_QUERY_CACHE_TTL', 24 * 60 * 60),
+    ],
     'security' => [
         'max_query_complexity' => (int) env('LIGHTHOUSE_MAX_QUERY_COMPLEXITY', 500),
         'max_query_depth' => (int) env('LIGHTHOUSE_MAX_QUERY_DEPTH', 12),

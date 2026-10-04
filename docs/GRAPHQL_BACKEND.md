@@ -49,7 +49,13 @@ The initial server configuration establishes:
 
 These limits are engineering defaults. A later load/security review may tighten them based on measured clinical workflows.
 
-Lighthouse's parsed-query cache uses Laravel's configured cache store. Aurevia's Docker application profile therefore pins `CACHE_STORE=redis`; using the Laravel starter default `database` without a cache table can make otherwise valid GraphQL requests fail before resolver execution.
+Laravel 13 blocks unserializing arbitrary PHP classes from generic cache storage by default through `cache.serializable_classes = false`. Lighthouse parsed-query cache entries contain GraphQL AST objects, so Aurevia does not persist those objects through the Redis application cache.
+
+The parsed-query cache is disabled by default in `local` and `testing` environments. Non-local environments use Lighthouse's `opcache` query-cache mode by default, which keeps parsed queries out of Redis while retaining production query-cache performance. `CACHE_STORE=redis` remains the application cache baseline for sessions, queues, and ordinary cache values.
+
+Deployments may override this behavior with `LIGHTHOUSE_QUERY_CACHE_ENABLE` and `LIGHTHOUSE_QUERY_CACHE_MODE`. Do not switch the query cache back to `store` or `hybrid` merely by broadly enabling arbitrary cache-class unserialization; any allow-list change requires a separate security review.
+
+When changing Lighthouse query-cache configuration, clear existing Lighthouse/Laravel caches before serving traffic: `php artisan lighthouse:clear-cache` followed by `php artisan optimize:clear`.
 
 ## Correlation IDs
 

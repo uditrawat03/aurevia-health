@@ -1,0 +1,209 @@
+"Sex-at-birth value captured without making it a country-specific identifier."
+enum SexAtBirth {
+    FEMALE
+    MALE
+    INTERSEX
+    UNKNOWN
+}
+
+enum PatientIdentifierType {
+    MRN
+    NATIONAL
+    INSURANCE
+    OTHER
+}
+
+enum PatientContactType {
+    PHONE
+    EMAIL
+}
+
+enum PatientAddressUse {
+    HOME
+    WORK
+    OTHER
+}
+
+enum PatientRelationshipType {
+    PARENT
+    GUARDIAN
+    SPOUSE
+    CHILD
+    SIBLING
+    OTHER
+}
+
+enum DuplicateMatchReason {
+    EXACT_IDENTIFIER
+    NAME_AND_DOB
+    FAMILY_NAME_AND_DOB
+}
+
+enum PatientMergeReviewStatus {
+    PENDING
+    APPROVED
+    REJECTED
+}
+
+type PatientIdentifier {
+    id: ID!
+    type: PatientIdentifierType!
+    system: String!
+    value: String!
+}
+
+type PatientContact {
+    id: ID!
+    type: PatientContactType!
+    value: String!
+    preferred: Boolean!
+}
+
+type PatientAddress {
+    id: ID!
+    use: PatientAddressUse!
+    line1: String!
+    line2: String
+    city: String!
+    region: String
+    postalCode: String
+    countryCode: String!
+    preferred: Boolean!
+}
+
+type PatientRelationship {
+    id: ID!
+    type: PatientRelationshipType!
+    name: String!
+    phone: String
+    email: String
+    legalGuardian: Boolean!
+    emergencyContact: Boolean!
+}
+
+type Patient {
+    id: ID!
+    organizationId: ID!
+    registrationFacilityId: ID!
+    givenName: String!
+    middleName: String
+    familyName: String!
+    preferredName: String
+    dateOfBirth: String!
+    sexAtBirth: SexAtBirth!
+    identifiers: [PatientIdentifier!]!
+    contacts: [PatientContact!]!
+    addresses: [PatientAddress!]!
+    relationships: [PatientRelationship!]!
+}
+
+type PatientDuplicateCandidate {
+    patientId: ID!
+    displayName: String!
+    dateOfBirth: String!
+    confidence: Int!
+    reason: DuplicateMatchReason!
+}
+
+type RegisterPatientPayload {
+    patient: Patient!
+    duplicateCandidates: [PatientDuplicateCandidate!]!
+}
+
+type PatientSearchResult {
+    items: [Patient!]!
+    total: Int!
+}
+
+type PatientMergeReview {
+    id: ID!
+    organizationId: ID!
+    sourcePatientId: ID!
+    targetPatientId: ID!
+    status: PatientMergeReviewStatus!
+    requestedByUserId: ID!
+    reviewedByUserId: ID
+    reason: String
+    createdAt: String!
+}
+
+input PatientIdentifierInput {
+    type: PatientIdentifierType!
+    system: String!
+    value: String!
+}
+
+input PatientContactInput {
+    type: PatientContactType!
+    value: String!
+    preferred: Boolean = false
+}
+
+input PatientAddressInput {
+    use: PatientAddressUse!
+    line1: String!
+    line2: String
+    city: String!
+    region: String
+    postalCode: String
+    countryCode: String!
+    preferred: Boolean = false
+}
+
+input PatientRelationshipInput {
+    type: PatientRelationshipType!
+    name: String!
+    phone: String
+    email: String
+    legalGuardian: Boolean = false
+    emergencyContact: Boolean = false
+}
+
+input RegisterPatientInput {
+    organizationId: ID!
+    registrationFacilityId: ID!
+    givenName: String!
+    middleName: String
+    familyName: String!
+    preferredName: String
+    dateOfBirth: String!
+    sexAtBirth: SexAtBirth!
+    identifiers: [PatientIdentifierInput!]!
+    contacts: [PatientContactInput!] = []
+    addresses: [PatientAddressInput!] = []
+    relationships: [PatientRelationshipInput!] = []
+}
+
+input PatientSearchInput {
+    organizationId: ID!
+    facilityId: ID
+    query: String!
+    limit: Int = 20
+}
+
+input RequestPatientMergeReviewInput {
+    organizationId: ID!
+    sourcePatientId: ID!
+    targetPatientId: ID!
+    reason: String
+}
+
+extend type Query {
+    patient(organizationId: ID!, id: ID!): Patient!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\PatientQuery")
+
+    patients(input: PatientSearchInput!): PatientSearchResult!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\PatientsQuery")
+}
+
+extend type Mutation {
+    registerPatient(input: RegisterPatientInput!): RegisterPatientPayload!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RegisterPatientMutation")
+
+    requestPatientMergeReview(input: RequestPatientMergeReviewInput!): PatientMergeReview!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RequestPatientMergeReviewMutation")
+}

@@ -6,3 +6,4 @@ type Query {
 #import organization/*.graphql
 #import identity/*.graphql
 #import audit/*.graphql
+#import patient/*.graphql

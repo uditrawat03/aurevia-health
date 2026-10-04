@@ -32,14 +32,20 @@ final readonly class AuditService
         OrganizationPermission $permission,
         ?string $facilityId,
         AuditOutcome $outcome,
+        ?string $patientId = null,
     ): void {
         $record = new AuditRecordData(
             actorUserId: $actorUserId,
             organizationId: $organizationId,
             facilityId: $facilityId,
-            patientId: null,
+            patientId: $patientId,
             resourceType: $this->resourceTypeFor($permission, $facilityId),
-            resourceId: $this->resourceIdFor($permission, $organizationId, $facilityId),
+            resourceId: $this->resourceIdFor(
+                permission: $permission,
+                organizationId: $organizationId,
+                facilityId: $facilityId,
+                patientId: $patientId,
+            ),
             action: AuditAction::fromOrganizationPermission($permission),
             outcome: $outcome,
             correlationId: $this->correlationId(),
@@ -65,6 +71,29 @@ final readonly class AuditService
             resourceType: AuditResourceType::ORGANIZATION,
             resourceId: $organizationId,
             action: AuditAction::CREATE_ORGANIZATION,
+            outcome: AuditOutcome::ALLOWED,
+            correlationId: $this->correlationId(),
+            occurredAt: now()->toIso8601String(),
+        ));
+    }
+
+    public function recordPatientOperation(
+        int $actorUserId,
+        string $organizationId,
+        ?string $facilityId,
+        string $patientId,
+        AuditAction $action,
+        AuditResourceType $resourceType = AuditResourceType::PATIENT,
+        ?string $resourceId = null,
+    ): void {
+        $this->audits->append(new AuditRecordData(
+            actorUserId: $actorUserId,
+            organizationId: $organizationId,
+            facilityId: $facilityId,
+            patientId: $patientId,
+            resourceType: $resourceType,
+            resourceId: $resourceId ?? $patientId,
+            action: $action,
             outcome: AuditOutcome::ALLOWED,
             correlationId: $this->correlationId(),
             occurredAt: now()->toIso8601String(),
@@ -137,6 +166,9 @@ final readonly class AuditService
             OrganizationPermission::MANAGE_SETTINGS => AuditResourceType::OPERATIONAL_SETTINGS,
             OrganizationPermission::MANAGE_MEMBERSHIPS => AuditResourceType::ORGANIZATION_MEMBERSHIP,
             OrganizationPermission::VIEW_AUDIT => AuditResourceType::AUDIT_EVENT,
+            OrganizationPermission::VIEW_PATIENTS,
+            OrganizationPermission::MANAGE_PATIENTS => AuditResourceType::PATIENT,
+            OrganizationPermission::REVIEW_PATIENT_MERGES => AuditResourceType::PATIENT_MERGE_REVIEW,
             OrganizationPermission::VIEW_ORGANIZATION,
             OrganizationPermission::MANAGE_ORGANIZATION => $facilityId === null
                 ? AuditResourceType::ORGANIZATION
@@ -148,9 +180,18 @@ final readonly class AuditService
         OrganizationPermission $permission,
         string $organizationId,
         ?string $facilityId,
+        ?string $patientId,
     ): ?string {
-        if ($permission === OrganizationPermission::VIEW_AUDIT) {
+        if ($permission === OrganizationPermission::VIEW_AUDIT
+            || $permission === OrganizationPermission::REVIEW_PATIENT_MERGES
+        ) {
             return null;
+        }
+
+        if ($permission === OrganizationPermission::VIEW_PATIENTS
+            || $permission === OrganizationPermission::MANAGE_PATIENTS
+        ) {
+            return $patientId;
         }
 
         return $facilityId ?? $organizationId;

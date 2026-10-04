@@ -86,6 +86,8 @@ Open:
 - Laravel health endpoint: `http://localhost:8000/up`
 - GraphQL endpoint: `http://localhost:8000/graphql`
 
+The API container deliberately starts Laravel with `php artisan serve --no-reload`. Laravel 13 otherwise filters most inherited environment variables before spawning the PHP development-server child process when a `.env` file exists. Because Docker Compose supplies the PostgreSQL, Redis, cache, queue, and session settings as container environment variables, removing `--no-reload` can make HTTP requests fall back to values from `apps/api/.env` while `docker exec ... php artisan` still uses the Compose values. Keep `--no-reload` in the Docker command and restart the API container after changing runtime environment variables.
+
 ## Angular GraphQL Proxy
 
 The Angular dev server proxies `/graphql` and `/sanctum` to `http://api:8000`. First-party feature code uses the typed GraphQL client boundary; generic `/api` domain traffic is intentionally not proxied.

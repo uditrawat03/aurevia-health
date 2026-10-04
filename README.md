@@ -298,6 +298,29 @@ The `auditEvents` GraphQL viewer is restricted to organization-wide `OWNER` and 
 
 See [docs/AUDIT_FOUNDATION.md](docs/AUDIT_FOUNDATION.md) for the audit schema, denial durability model, restricted viewer, patient-context extension point, and verification requirements.
 
+## Patient Identity / MPI Foundation
+
+V1-M4 introduces a country-neutral patient identity aggregate with internal ULID patient IDs, typed MRN/national/insurance/other identifiers, demographics, contacts, addresses, relationships, secure patient search, explainable duplicate candidates, and a non-destructive merge-review model. National and external identifiers never become primary keys, and duplicate candidates are never auto-merged.
+
+Patient reads and search are organization/facility authorized and patient-aware audit evidence now carries patient context. `OWNER`/`ADMIN` can request organization-wide merge review; `CLINICIAN`/`STAFF` can view and register patients inside permitted facility scope; `VIEWER` receives no patient access in this foundation.
+
+For local development, seed the synthetic workspace after migration:
+
+```powershell
+docker exec aurevia-health-api php artisan db:seed
+```
+
+Then sign in with:
+
+```text
+Email:    owner@aurevia.local
+Password: AureviaLocal123!
+```
+
+These credentials are intentionally local-development-only. The demo seeder is disabled outside Laravel's `local` environment and also creates one demo facility plus two synthetic patients.
+
+See [docs/PATIENT_IDENTITY_MPI.md](docs/PATIENT_IDENTITY_MPI.md) for patient identity modeling, duplicate matching, merge-review safety, authorization, auditing, the patient-context banner foundation, and seed-data details.
+
 ## Development Principles
 
 ### 1. Core before country specifics
@@ -373,6 +396,7 @@ Start with:
 - [docs/GRAPHQL_BACKEND.md](docs/GRAPHQL_BACKEND.md) — GraphQL server, resolver, security, and testing conventions.
 - [docs/IDENTITY_AUTHORIZATION.md](docs/IDENTITY_AUTHORIZATION.md) — session authentication, memberships, role/facility authorization, and ABAC extension points.
 - [docs/AUDIT_FOUNDATION.md](docs/AUDIT_FOUNDATION.md) — structured audit evidence, denial durability, and restricted audit viewing.
+- [docs/PATIENT_IDENTITY_MPI.md](docs/PATIENT_IDENTITY_MPI.md) — patient identity, MPI duplicate review, secure search, patient audit context, and local demo seeding.
 - [SECURITY.md](SECURITY.md) — repository security expectations and release blockers.
 
 ## Initial Definition of Ready

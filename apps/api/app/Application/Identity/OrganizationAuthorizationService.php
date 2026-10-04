@@ -60,6 +60,7 @@ final readonly class OrganizationAuthorizationService
         OrganizationPermission $permission,
         ?string $facilityId = null,
         bool $requiresAllFacilities = false,
+        ?string $patientId = null,
     ): OrganizationMembershipData {
         $actorUserId = $this->authenticatedUserId();
         $membership = $this->identities->membershipForUserOrganization(
@@ -76,6 +77,7 @@ final readonly class OrganizationAuthorizationService
                 permission: $permission,
                 facilityId: $facilityId,
                 outcome: AuditOutcome::DENIED,
+                patientId: $patientId,
             );
 
             throw new AuthorizationException('This action is unauthorized.');
@@ -89,6 +91,7 @@ final readonly class OrganizationAuthorizationService
                 permission: $permission,
                 facilityId: $facilityId,
                 outcome: AuditOutcome::DENIED,
+                patientId: $patientId,
             );
 
             throw new LogicException('Organization membership contains an unsupported role.');
@@ -110,6 +113,7 @@ final readonly class OrganizationAuthorizationService
                 permission: $permission,
                 facilityId: $facilityId,
                 outcome: AuditOutcome::DENIED,
+                patientId: $patientId,
             );
 
             throw new AuthorizationException('This action is unauthorized.');
@@ -121,6 +125,7 @@ final readonly class OrganizationAuthorizationService
             permission: $permission,
             facilityId: $facilityId,
             outcome: AuditOutcome::ALLOWED,
+            patientId: $patientId,
         );
 
         return $membership;

@@ -13,6 +13,11 @@ enum AuditAction {
     MANAGE_SETTINGS
     MANAGE_MEMBERSHIPS
     VIEW_AUDIT
+    VIEW_PATIENTS
+    MANAGE_PATIENTS
+    REVIEW_PATIENT_MERGES
+    REGISTER_PATIENT
+    REQUEST_PATIENT_MERGE_REVIEW
 }
 
 "Generic resource classification kept independent from country-specific identifiers."
@@ -22,6 +27,8 @@ enum AuditResourceType {
     OPERATIONAL_SETTINGS
     ORGANIZATION_MEMBERSHIP
     AUDIT_EVENT
+    PATIENT
+    PATIENT_MERGE_REVIEW
 }
 
 "Append-oriented evidence for a protected operation or security-relevant denial."
