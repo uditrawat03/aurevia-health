@@ -1,0 +1,193 @@
+"Generic healthcare resource that can be reserved on the scheduling calendar."
+enum SchedulingResourceType {
+    PROVIDER
+    ROOM
+    EQUIPMENT
+}
+
+enum AppointmentStatus {
+    SCHEDULED
+    CANCELLED
+}
+
+enum WaitlistStatus {
+    WAITING
+    OFFERED
+    BOOKED
+    CANCELLED
+}
+
+type SchedulingResource {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    type: SchedulingResourceType!
+    name: String!
+    code: String!
+    active: Boolean!
+}
+
+type AppointmentType {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    code: String!
+    name: String!
+    durationMinutes: Int!
+    active: Boolean!
+}
+
+type Appointment {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    patientDisplayName: String!
+    appointmentType: AppointmentType!
+    resources: [SchedulingResource!]!
+    status: AppointmentStatus!
+    "UTC timestamp. Use timezone for local display."
+    startsAt: String!
+    "UTC timestamp. Use timezone for local display."
+    endsAt: String!
+    timezone: String!
+    reason: String
+    cancelledAt: String
+    cancellationReason: String
+    createdAt: String!
+}
+
+type BookAppointmentPayload {
+    appointment: Appointment!
+    "True when an identical idempotent retry returned the existing booking."
+    replayed: Boolean!
+}
+
+type WaitlistEntry {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    patientDisplayName: String!
+    appointmentType: AppointmentType!
+    status: WaitlistStatus!
+    preferredFrom: String!
+    preferredUntil: String!
+    timezone: String!
+    reason: String
+    cancelledAt: String
+    cancellationReason: String
+    createdAt: String!
+}
+
+type JoinWaitlistPayload {
+    entry: WaitlistEntry!
+    replayed: Boolean!
+}
+
+input SchedulingScopeInput {
+    organizationId: ID!
+    "Null means organization-wide and therefore requires all-facility schedule access."
+    facilityId: ID
+}
+
+input AppointmentWindowInput {
+    organizationId: ID!
+    "Null means organization-wide and therefore requires all-facility schedule access."
+    facilityId: ID
+    from: String!
+    to: String!
+}
+
+input BookAppointmentInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    appointmentTypeId: ID!
+    resourceIds: [ID!]!
+    "Local date/time interpreted in timezone, for example 2026-10-05T10:30."
+    startsAtLocal: String!
+    "IANA timezone such as Asia/Kolkata or Europe/London."
+    timezone: String!
+    reason: String
+    "Client-generated retry key. Reuse the same key only for the same booking input."
+    idempotencyKey: String!
+}
+
+input RescheduleAppointmentInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    appointmentId: ID!
+    resourceIds: [ID!]!
+    startsAtLocal: String!
+    timezone: String!
+}
+
+input CancelAppointmentInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    appointmentId: ID!
+    reason: String!
+}
+
+input JoinWaitlistInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    appointmentTypeId: ID!
+    preferredFromLocal: String!
+    preferredUntilLocal: String!
+    timezone: String!
+    reason: String
+    idempotencyKey: String!
+}
+
+input CancelWaitlistInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    waitlistEntryId: ID!
+    reason: String!
+}
+
+extend type Query {
+    schedulingResources(input: SchedulingScopeInput!): [SchedulingResource!]!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\SchedulingResourcesQuery")
+
+    appointmentTypes(input: SchedulingScopeInput!): [AppointmentType!]!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\AppointmentTypesQuery")
+
+    appointments(input: AppointmentWindowInput!): [Appointment!]!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\AppointmentsQuery")
+
+    waitlistEntries(input: SchedulingScopeInput!): [WaitlistEntry!]!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\WaitlistEntriesQuery")
+}
+
+extend type Mutation {
+    bookAppointment(input: BookAppointmentInput!): BookAppointmentPayload!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\BookAppointmentMutation")
+
+    rescheduleAppointment(input: RescheduleAppointmentInput!): Appointment!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RescheduleAppointmentMutation")
+
+    cancelAppointment(input: CancelAppointmentInput!): Appointment!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\CancelAppointmentMutation")
+
+    joinWaitlist(input: JoinWaitlistInput!): JoinWaitlistPayload!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\JoinWaitlistMutation")
+
+    cancelWaitlist(input: CancelWaitlistInput!): WaitlistEntry!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\CancelWaitlistMutation")
+}

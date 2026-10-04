@@ -6,6 +6,7 @@ import { PatientRegisterPage } from './features/patients/patient-register.page';
 import { PatientsPage } from './features/patients/patients.page';
 import { PlaceholderPage } from './features/placeholder/placeholder.page';
 import { PrivacyPage } from './features/privacy/privacy.page';
+import { SchedulingPage } from './features/scheduling/scheduling.page';
 
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'overview' },
@@ -15,14 +16,7 @@ export const routes: Routes = [
   { path: 'patients/:patientId', component: PatientDetailPage },
   { path: 'privacy', component: PrivacyPage },
   { path: 'audit', component: AuditPage },
-  {
-    path: 'scheduling',
-    component: PlaceholderPage,
-    data: {
-      title: 'Scheduling',
-      description: 'Scheduling becomes functional in V1-M6. This route is wired now so navigation is stable.',
-    },
-  },
+  { path: 'scheduling', component: SchedulingPage },
   {
     path: 'encounters',
     component: PlaceholderPage,

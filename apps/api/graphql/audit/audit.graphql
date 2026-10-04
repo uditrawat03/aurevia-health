@@ -25,6 +25,14 @@ enum AuditAction {
     REVOKE_PATIENT_CONSENT
     PRIVACY_DECISION
     ACTIVATE_BREAK_GLASS
+    VIEW_SCHEDULE
+    MANAGE_SCHEDULE
+    MANAGE_SCHEDULING_CONFIGURATION
+    BOOK_APPOINTMENT
+    RESCHEDULE_APPOINTMENT
+    CANCEL_APPOINTMENT
+    JOIN_WAITLIST
+    CANCEL_WAITLIST
 }
 
 "Generic resource classification kept independent from country-specific identifiers."
@@ -39,6 +47,10 @@ enum AuditResourceType {
     PATIENT_CONSENT
     PRIVACY_DECISION
     BREAK_GLASS_ACCESS
+    APPOINTMENT
+    SCHEDULING_RESOURCE
+    APPOINTMENT_TYPE
+    WAITLIST_ENTRY
 }
 
 "Append-oriented evidence for a protected operation or security-relevant denial."

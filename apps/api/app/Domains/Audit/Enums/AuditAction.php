@@ -30,6 +30,14 @@ enum AuditAction: string
     case REVOKE_PATIENT_CONSENT = 'REVOKE_PATIENT_CONSENT';
     case PRIVACY_DECISION = 'PRIVACY_DECISION';
     case ACTIVATE_BREAK_GLASS = 'ACTIVATE_BREAK_GLASS';
+    case VIEW_SCHEDULE = 'VIEW_SCHEDULE';
+    case MANAGE_SCHEDULE = 'MANAGE_SCHEDULE';
+    case MANAGE_SCHEDULING_CONFIGURATION = 'MANAGE_SCHEDULING_CONFIGURATION';
+    case BOOK_APPOINTMENT = 'BOOK_APPOINTMENT';
+    case RESCHEDULE_APPOINTMENT = 'RESCHEDULE_APPOINTMENT';
+    case CANCEL_APPOINTMENT = 'CANCEL_APPOINTMENT';
+    case JOIN_WAITLIST = 'JOIN_WAITLIST';
+    case CANCEL_WAITLIST = 'CANCEL_WAITLIST';
 
     public static function fromOrganizationPermission(OrganizationPermission $permission): self
     {
@@ -46,6 +54,9 @@ enum AuditAction: string
             OrganizationPermission::VIEW_CONSENTS => self::VIEW_CONSENTS,
             OrganizationPermission::MANAGE_CONSENTS => self::MANAGE_CONSENTS,
             OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS => self::BREAK_GLASS_PATIENT_ACCESS,
+            OrganizationPermission::VIEW_SCHEDULE => self::VIEW_SCHEDULE,
+            OrganizationPermission::MANAGE_SCHEDULE => self::MANAGE_SCHEDULE,
+            OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION => self::MANAGE_SCHEDULING_CONFIGURATION,
         };
     }
 }

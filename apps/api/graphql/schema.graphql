@@ -8,3 +8,4 @@ type Query {
 #import audit/*.graphql
 #import patient/*.graphql
 #import privacy/*.graphql
+#import scheduling/*.graphql

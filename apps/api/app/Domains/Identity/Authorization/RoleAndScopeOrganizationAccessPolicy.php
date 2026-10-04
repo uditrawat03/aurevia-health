@@ -50,6 +50,9 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::VIEW_CONSENTS,
                 OrganizationPermission::MANAGE_CONSENTS,
                 OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS,
+                OrganizationPermission::VIEW_SCHEDULE,
+                OrganizationPermission::MANAGE_SCHEDULE,
+                OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION,
             ],
             OrganizationRole::CLINICIAN => [
                 OrganizationPermission::VIEW_ORGANIZATION,
@@ -58,6 +61,7 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::MANAGE_PATIENTS,
                 OrganizationPermission::VIEW_CONSENTS,
                 OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS,
+                OrganizationPermission::VIEW_SCHEDULE,
             ],
             OrganizationRole::STAFF => [
                 OrganizationPermission::VIEW_ORGANIZATION,
@@ -66,6 +70,8 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::MANAGE_PATIENTS,
                 OrganizationPermission::VIEW_CONSENTS,
                 OrganizationPermission::MANAGE_CONSENTS,
+                OrganizationPermission::VIEW_SCHEDULE,
+                OrganizationPermission::MANAGE_SCHEDULE,
             ],
             OrganizationRole::VIEWER => [
                 OrganizationPermission::VIEW_ORGANIZATION,

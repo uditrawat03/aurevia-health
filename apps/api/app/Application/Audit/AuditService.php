@@ -181,6 +181,9 @@ final readonly class AuditService
             OrganizationPermission::VIEW_CONSENTS,
             OrganizationPermission::MANAGE_CONSENTS => AuditResourceType::PATIENT_CONSENT,
             OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS => AuditResourceType::BREAK_GLASS_ACCESS,
+            OrganizationPermission::VIEW_SCHEDULE,
+            OrganizationPermission::MANAGE_SCHEDULE => AuditResourceType::APPOINTMENT,
+            OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION => AuditResourceType::SCHEDULING_RESOURCE,
             OrganizationPermission::VIEW_ORGANIZATION,
             OrganizationPermission::MANAGE_ORGANIZATION => $facilityId === null
                 ? AuditResourceType::ORGANIZATION
@@ -194,9 +197,12 @@ final readonly class AuditService
         ?string $facilityId,
         ?string $patientId,
     ): ?string {
-        if ($permission === OrganizationPermission::VIEW_AUDIT
-            || $permission === OrganizationPermission::REVIEW_PATIENT_MERGES
-        ) {
+        if (in_array($permission, [
+            OrganizationPermission::VIEW_AUDIT,
+            OrganizationPermission::REVIEW_PATIENT_MERGES,
+            OrganizationPermission::VIEW_SCHEDULE,
+            OrganizationPermission::MANAGE_SCHEDULE,
+        ], true)) {
             return null;
         }
 

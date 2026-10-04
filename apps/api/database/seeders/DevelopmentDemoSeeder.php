@@ -13,6 +13,8 @@ use App\Domains\Privacy\Enums\ConsentDataCategory;
 use App\Domains\Privacy\Enums\ConsentPurpose;
 use App\Domains\Privacy\Enums\ConsentRecipientClass;
 use App\Domains\Privacy\Enums\ConsentStatus;
+use App\Domains\Scheduling\Enums\SchedulingResourceType;
+use App\Models\AppointmentType;
 use App\Models\Facility;
 use App\Models\Organization;
 use App\Models\OrganizationMembership;
@@ -20,6 +22,7 @@ use App\Models\Patient;
 use App\Models\PatientContact;
 use App\Models\PatientIdentifier;
 use App\Models\PatientConsent;
+use App\Models\SchedulingResource;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -114,6 +117,8 @@ final class DevelopmentDemoSeeder extends Seeder
             patient: $rahil,
             revoked: true,
         );
+
+        $this->seedScheduling($organization, $facility);
     }
 
     private function seedPatient(
@@ -164,6 +169,48 @@ final class DevelopmentDemoSeeder extends Seeder
         );
 
         return $patient;
+    }
+
+    private function seedScheduling(Organization $organization, Facility $facility): void
+    {
+        AppointmentType::query()->updateOrCreate(
+            [
+                'organization_id' => $organization->getKey(),
+                'facility_id' => $facility->getKey(),
+                'code' => 'GEN-CONSULT',
+            ],
+            [
+                'name' => 'General consultation',
+                'duration_minutes' => 30,
+                'active' => true,
+            ],
+        );
+
+        SchedulingResource::query()->updateOrCreate(
+            [
+                'organization_id' => $organization->getKey(),
+                'facility_id' => $facility->getKey(),
+                'code' => 'PROV-MIRA-SEN',
+            ],
+            [
+                'type' => SchedulingResourceType::PROVIDER->value,
+                'name' => 'Dr. Mira Sen',
+                'active' => true,
+            ],
+        );
+
+        SchedulingResource::query()->updateOrCreate(
+            [
+                'organization_id' => $organization->getKey(),
+                'facility_id' => $facility->getKey(),
+                'code' => 'ROOM-CONSULT-1',
+            ],
+            [
+                'type' => SchedulingResourceType::ROOM->value,
+                'name' => 'Consult Room 1',
+                'active' => true,
+            ],
+        );
     }
 
     private function seedConsent(
