@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 export interface AhNavItem {
   readonly label: string;
   readonly icon: string;
-  readonly href: string;
-  readonly active?: boolean;
+  readonly route: string;
+  readonly exact?: boolean;
 }
 
 export interface AhNavGroup {
@@ -14,6 +15,7 @@ export interface AhNavGroup {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [RouterLink, RouterLinkActive],
   selector: 'ah-sidebar',
   template: `
     <aside class="ah-sidebar" aria-label="Primary navigation">
@@ -35,9 +37,10 @@ export interface AhNavGroup {
           @for (item of group.items; track item.label) {
             <a
               class="ah-nav-link"
-              [class.is-active]="item.active"
-              [attr.aria-current]="item.active ? 'page' : null"
-              [href]="item.href"
+              [routerLink]="item.route"
+              routerLinkActive="is-active"
+              [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+              ariaCurrentWhenActive="page"
             >
               <span class="ah-nav-icon" aria-hidden="true">{{ item.icon }}</span>
               {{ item.label }}

@@ -9,9 +9,14 @@ use App\Domains\Audit\Enums\AuditOutcome;
 use App\Domains\Identity\Enums\MembershipStatus;
 use App\Domains\Identity\Enums\OrganizationRole;
 use App\Domains\Patient\Enums\PatientMergeReviewStatus;
+use App\Domains\Privacy\Enums\ConsentDataCategory;
+use App\Domains\Privacy\Enums\ConsentPurpose;
+use App\Domains\Privacy\Enums\ConsentRecipientClass;
+use App\Domains\Privacy\Enums\ConsentStatus;
 use App\Models\Facility;
 use App\Models\Organization;
 use App\Models\OrganizationMembership;
+use App\Models\PatientConsent;
 use App\Models\User;
 use Illuminate\Testing\TestResponse;
 use Tests\IntegrationTestCase;
@@ -159,6 +164,19 @@ final class PatientIdentityFoundationTest extends IntegrationTestCase
             correlationId: 'patient-scope-b',
         )->json('data.registerPatient.patient.id');
         self::assertIsString($patientB);
+
+        // V1-M5 requires an effective privacy consent in addition to RBAC/facility scope.
+        PatientConsent::query()->create([
+            'organization_id' => $organization->getKey(),
+            'patient_id' => $patientA,
+            'facility_id' => $facilityA->getKey(),
+            'data_category' => ConsentDataCategory::DEMOGRAPHICS->value,
+            'purpose' => ConsentPurpose::TREATMENT->value,
+            'recipient_class' => ConsentRecipientClass::CARE_TEAM->value,
+            'status' => ConsentStatus::ACTIVE->value,
+            'granted_by_user_id' => $owner->getKey(),
+            'effective_from' => now()->subMinute(),
+        ]);
 
         $staff = User::factory()->create();
         $membership = OrganizationMembership::query()->create([

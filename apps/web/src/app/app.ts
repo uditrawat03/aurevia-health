@@ -1,17 +1,9 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AuthService } from './core/auth/auth.service';
-import { AhAppShellComponent, AhHeaderComponent, AhNavGroup, AhPageHeaderComponent, AhSidebarComponent } from './layout';
-import {
-  AhBadgeComponent,
-  AhButtonComponent,
-  AhCardComponent,
-  AhFormFieldComponent,
-  AhTableShellComponent,
-  AhTabItem,
-  AhTabsComponent,
-} from './shared/ui';
+import { AhAppShellComponent, AhHeaderComponent, AhNavGroup, AhSidebarComponent } from './layout';
+import { AhButtonComponent } from './shared/ui';
 
 @Component({
   imports: [
@@ -19,13 +11,7 @@ import {
     AhAppShellComponent,
     AhSidebarComponent,
     AhHeaderComponent,
-    AhPageHeaderComponent,
     AhButtonComponent,
-    AhBadgeComponent,
-    AhCardComponent,
-    AhFormFieldComponent,
-    AhTabsComponent,
-    AhTableShellComponent,
   ],
   selector: 'app-root',
   styleUrl: './app.scss',
@@ -39,37 +25,35 @@ export class App implements OnInit {
     {
       label: 'Workspace',
       items: [
-        { label: 'Overview', icon: '▦', href: '#overview', active: true },
-        { label: 'Patients', icon: '◉', href: '#patients' },
-        { label: 'Scheduling', icon: '◷', href: '#scheduling' },
-        { label: 'Encounters', icon: '✚', href: '#encounters' },
+        { label: 'Overview', icon: '▦', route: '/overview', exact: true },
+        { label: 'Patients', icon: '◉', route: '/patients' },
+        { label: 'Privacy & consent', icon: '◈', route: '/privacy' },
+        { label: 'Scheduling', icon: '◷', route: '/scheduling' },
+        { label: 'Encounters', icon: '✚', route: '/encounters' },
       ],
     },
     {
       label: 'Operations',
       items: [
-        { label: 'Work queues', icon: '≡', href: '#work-queues' },
-        { label: 'Interoperability', icon: '⌁', href: '#interoperability' },
-        { label: 'Administration', icon: '⚙', href: '#administration' },
+        { label: 'Audit', icon: '◎', route: '/audit' },
+        { label: 'Work queues', icon: '≡', route: '/work-queues' },
+        { label: 'Interoperability', icon: '⌁', route: '/interoperability' },
+        { label: 'Administration', icon: '⚙', route: '/administration' },
       ],
     },
   ];
 
-  protected readonly overviewTabs: readonly AhTabItem[] = [
-    { id: 'overview', label: 'Overview' },
-    { id: 'activity', label: 'Activity' },
-    { id: 'queues', label: 'Work queues', badge: 8 },
-    { id: 'audit', label: 'Audit' },
-  ];
+  protected readonly userInitials = computed(() => {
+    const name = this.auth.user()?.name.trim() ?? '';
+    const initials = name
+      .split(/\s+/)
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase() ?? '')
+      .join('');
 
-  protected readonly activityTabs: readonly AhTabItem[] = [
-    { id: 'all', label: 'All' },
-    { id: 'clinical', label: 'Clinical' },
-    { id: 'admin', label: 'Admin' },
-  ];
-
-  protected readonly activeOverviewTab = signal('overview');
-  protected readonly activeActivityTab = signal('all');
+    return initials || 'AH';
+  });
 
   ngOnInit(): void {
     if (isPlatformBrowser(this.platformId)) {

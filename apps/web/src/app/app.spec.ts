@@ -1,13 +1,23 @@
 import { signal } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
-import { AuthenticatedUser, AuthService } from './core/auth/auth.service';
+import { provideRouter } from '@angular/router';
 import { App } from './app';
+import { routes } from './app.routes';
+import { AuthenticatedUser, AuthService } from './core/auth/auth.service';
 
 const authenticatedUser: AuthenticatedUser = {
   id: '1',
   name: 'Synthetic Clinician',
   email: 'clinician@example.test',
-  memberships: [],
+  memberships: [
+    {
+      organizationId: '01JTESTORG',
+      role: 'CLINICIAN',
+      status: 'ACTIVE',
+      allFacilities: true,
+      facilityIds: [],
+    },
+  ],
 };
 
 class AuthServiceStub {
@@ -24,26 +34,31 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [{ provide: AuthService, useClass: AuthServiceStub }],
+      providers: [
+        provideRouter(routes),
+        { provide: AuthService, useClass: AuthServiceStub },
+      ],
     }).compileComponents();
   });
 
   it('should create the app', () => {
     const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(fixture.componentInstance).toBeTruthy();
   });
 
-  it('should render the authenticated Aurevia Health application shell', async () => {
+  it('should render authenticated route navigation instead of static hash links', async () => {
     const fixture = TestBed.createComponent(App);
     fixture.detectChanges();
     await fixture.whenStable();
 
     const compiled = fixture.nativeElement as HTMLElement;
+    const links = Array.from(compiled.querySelectorAll<HTMLAnchorElement>('ah-sidebar a'));
 
-    expect(compiled.querySelector('h1')?.textContent).toContain('Clinical operations');
     expect(compiled.querySelector('ah-sidebar')).toBeTruthy();
     expect(compiled.textContent).toContain('Synthetic Clinician');
+    expect(compiled.textContent).toContain('Privacy & consent');
+    expect(links.some((link) => link.getAttribute('href') === '/patients')).toBe(true);
+    expect(links.some((link) => link.getAttribute('href') === '/audit')).toBe(true);
     expect(compiled.textContent).toContain('Sign out');
   });
 });

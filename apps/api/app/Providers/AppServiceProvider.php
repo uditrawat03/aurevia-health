@@ -14,10 +14,16 @@ use App\Domains\Identity\Authorization\RoleAndScopeOrganizationAccessPolicy;
 use App\Domains\Identity\Repositories\IdentityRepo;
 use App\Domains\Organization\Repositories\OrganizationRepo;
 use App\Domains\Patient\Repositories\PatientRepo;
+use App\Domains\Privacy\Authorization\ConsentAndBreakGlassPrivacyPolicy;
+use App\Domains\Privacy\Authorization\DefaultCountryProfilePrivacyPolicyRegistry;
+use App\Domains\Privacy\Authorization\CountryProfilePrivacyPolicyRegistry;
+use App\Domains\Privacy\Authorization\PrivacyPolicy;
+use App\Domains\Privacy\Repositories\PrivacyRepo;
 use App\Infrastructure\Persistence\Audit\EloquentAuditRepo;
 use App\Infrastructure\Persistence\Identity\EloquentIdentityRepo;
 use App\Infrastructure\Persistence\Organization\EloquentOrganizationRepo;
 use App\Infrastructure\Persistence\Patient\EloquentPatientRepo;
+use App\Infrastructure\Persistence\Privacy\EloquentPrivacyRepo;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -30,6 +36,12 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->bind(IdentityRepo::class, EloquentIdentityRepo::class);
         $this->app->bind(AuditRepo::class, EloquentAuditRepo::class);
         $this->app->bind(PatientRepo::class, EloquentPatientRepo::class);
+        $this->app->bind(PrivacyRepo::class, EloquentPrivacyRepo::class);
         $this->app->bind(OrganizationAccessPolicy::class, RoleAndScopeOrganizationAccessPolicy::class);
+        $this->app->bind(PrivacyPolicy::class, ConsentAndBreakGlassPrivacyPolicy::class);
+        $this->app->bind(
+            CountryProfilePrivacyPolicyRegistry::class,
+            DefaultCountryProfilePrivacyPolicyRegistry::class,
+        );
     }
 }

@@ -18,6 +18,13 @@ enum AuditAction {
     REVIEW_PATIENT_MERGES
     REGISTER_PATIENT
     REQUEST_PATIENT_MERGE_REVIEW
+    VIEW_CONSENTS
+    MANAGE_CONSENTS
+    BREAK_GLASS_PATIENT_ACCESS
+    GRANT_PATIENT_CONSENT
+    REVOKE_PATIENT_CONSENT
+    PRIVACY_DECISION
+    ACTIVATE_BREAK_GLASS
 }
 
 "Generic resource classification kept independent from country-specific identifiers."
@@ -29,6 +36,9 @@ enum AuditResourceType {
     AUDIT_EVENT
     PATIENT
     PATIENT_MERGE_REVIEW
+    PATIENT_CONSENT
+    PRIVACY_DECISION
+    BREAK_GLASS_ACCESS
 }
 
 "Append-oriented evidence for a protected operation or security-relevant denial."

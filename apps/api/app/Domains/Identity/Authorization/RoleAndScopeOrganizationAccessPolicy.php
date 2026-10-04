@@ -47,12 +47,25 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::VIEW_PATIENTS,
                 OrganizationPermission::MANAGE_PATIENTS,
                 OrganizationPermission::REVIEW_PATIENT_MERGES,
+                OrganizationPermission::VIEW_CONSENTS,
+                OrganizationPermission::MANAGE_CONSENTS,
+                OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS,
             ],
-            OrganizationRole::CLINICIAN, OrganizationRole::STAFF => [
+            OrganizationRole::CLINICIAN => [
                 OrganizationPermission::VIEW_ORGANIZATION,
                 OrganizationPermission::VIEW_SETTINGS,
                 OrganizationPermission::VIEW_PATIENTS,
                 OrganizationPermission::MANAGE_PATIENTS,
+                OrganizationPermission::VIEW_CONSENTS,
+                OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS,
+            ],
+            OrganizationRole::STAFF => [
+                OrganizationPermission::VIEW_ORGANIZATION,
+                OrganizationPermission::VIEW_SETTINGS,
+                OrganizationPermission::VIEW_PATIENTS,
+                OrganizationPermission::MANAGE_PATIENTS,
+                OrganizationPermission::VIEW_CONSENTS,
+                OrganizationPermission::MANAGE_CONSENTS,
             ],
             OrganizationRole::VIEWER => [
                 OrganizationPermission::VIEW_ORGANIZATION,

@@ -7,3 +7,4 @@ type Query {
 #import identity/*.graphql
 #import audit/*.graphql
 #import patient/*.graphql
+#import privacy/*.graphql

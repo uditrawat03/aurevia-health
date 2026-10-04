@@ -9,12 +9,17 @@ use App\Domains\Identity\Enums\OrganizationRole;
 use App\Domains\Patient\Enums\PatientContactType;
 use App\Domains\Patient\Enums\PatientIdentifierType;
 use App\Domains\Patient\Enums\SexAtBirth;
+use App\Domains\Privacy\Enums\ConsentDataCategory;
+use App\Domains\Privacy\Enums\ConsentPurpose;
+use App\Domains\Privacy\Enums\ConsentRecipientClass;
+use App\Domains\Privacy\Enums\ConsentStatus;
 use App\Models\Facility;
 use App\Models\Organization;
 use App\Models\OrganizationMembership;
 use App\Models\Patient;
 use App\Models\PatientContact;
 use App\Models\PatientIdentifier;
+use App\Models\PatientConsent;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -74,7 +79,7 @@ final class DevelopmentDemoSeeder extends Seeder
             ],
         );
 
-        $this->seedPatient(
+        $asha = $this->seedPatient(
             organization: $organization,
             facility: $facility,
             givenName: 'Asha',
@@ -84,7 +89,7 @@ final class DevelopmentDemoSeeder extends Seeder
             mrn: 'DEMO-0001',
             phone: '+910000000001',
         );
-        $this->seedPatient(
+        $rahil = $this->seedPatient(
             organization: $organization,
             facility: $facility,
             givenName: 'Rahil',
@@ -93,6 +98,21 @@ final class DevelopmentDemoSeeder extends Seeder
             sexAtBirth: SexAtBirth::MALE,
             mrn: 'DEMO-0002',
             phone: '+910000000002',
+        );
+
+        $this->seedConsent(
+            owner: $owner,
+            organization: $organization,
+            facility: $facility,
+            patient: $asha,
+            revoked: false,
+        );
+        $this->seedConsent(
+            owner: $owner,
+            organization: $organization,
+            facility: $facility,
+            patient: $rahil,
+            revoked: true,
         );
     }
 
@@ -105,7 +125,7 @@ final class DevelopmentDemoSeeder extends Seeder
         SexAtBirth $sexAtBirth,
         string $mrn,
         string $phone,
-    ): void {
+    ): Patient {
         $patient = Patient::query()->firstOrCreate(
             [
                 'organization_id' => $organization->getKey(),
@@ -141,6 +161,36 @@ final class DevelopmentDemoSeeder extends Seeder
                 'value' => $phone,
             ],
             ['preferred' => true],
+        );
+
+        return $patient;
+    }
+
+    private function seedConsent(
+        User $owner,
+        Organization $organization,
+        Facility $facility,
+        Patient $patient,
+        bool $revoked,
+    ): void {
+        PatientConsent::query()->updateOrCreate(
+            [
+                'organization_id' => $organization->getKey(),
+                'patient_id' => $patient->getKey(),
+                'facility_id' => $facility->getKey(),
+                'data_category' => ConsentDataCategory::DEMOGRAPHICS->value,
+                'purpose' => ConsentPurpose::TREATMENT->value,
+                'recipient_class' => ConsentRecipientClass::CARE_TEAM->value,
+            ],
+            [
+                'status' => $revoked ? ConsentStatus::REVOKED->value : ConsentStatus::ACTIVE->value,
+                'granted_by_user_id' => $owner->getKey(),
+                'effective_from' => now()->subDay(),
+                'effective_until' => null,
+                'revoked_at' => $revoked ? now()->subHour() : null,
+                'revoked_by_user_id' => $revoked ? $owner->getKey() : null,
+                'revocation_reason' => $revoked ? 'Synthetic revoked-consent scenario' : null,
+            ],
         );
     }
 }

@@ -85,8 +85,9 @@ final readonly class AuditService
         AuditAction $action,
         AuditResourceType $resourceType = AuditResourceType::PATIENT,
         ?string $resourceId = null,
+        AuditOutcome $outcome = AuditOutcome::ALLOWED,
     ): void {
-        $this->audits->append(new AuditRecordData(
+        $record = new AuditRecordData(
             actorUserId: $actorUserId,
             organizationId: $organizationId,
             facilityId: $facilityId,
@@ -94,10 +95,18 @@ final readonly class AuditService
             resourceType: $resourceType,
             resourceId: $resourceId ?? $patientId,
             action: $action,
-            outcome: AuditOutcome::ALLOWED,
+            outcome: $outcome,
             correlationId: $this->correlationId(),
             occurredAt: now()->toIso8601String(),
-        ));
+        );
+
+        if ($outcome === AuditOutcome::DENIED) {
+            $this->deferDenied($record);
+
+            return;
+        }
+
+        $this->audits->append($record);
     }
 
     public function organizationEvents(string $organizationId, int $limit): AuditEventCollectionData
@@ -169,6 +178,9 @@ final readonly class AuditService
             OrganizationPermission::VIEW_PATIENTS,
             OrganizationPermission::MANAGE_PATIENTS => AuditResourceType::PATIENT,
             OrganizationPermission::REVIEW_PATIENT_MERGES => AuditResourceType::PATIENT_MERGE_REVIEW,
+            OrganizationPermission::VIEW_CONSENTS,
+            OrganizationPermission::MANAGE_CONSENTS => AuditResourceType::PATIENT_CONSENT,
+            OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS => AuditResourceType::BREAK_GLASS_ACCESS,
             OrganizationPermission::VIEW_ORGANIZATION,
             OrganizationPermission::MANAGE_ORGANIZATION => $facilityId === null
                 ? AuditResourceType::ORGANIZATION
@@ -188,9 +200,13 @@ final readonly class AuditService
             return null;
         }
 
-        if ($permission === OrganizationPermission::VIEW_PATIENTS
-            || $permission === OrganizationPermission::MANAGE_PATIENTS
-        ) {
+        if (in_array($permission, [
+            OrganizationPermission::VIEW_PATIENTS,
+            OrganizationPermission::MANAGE_PATIENTS,
+            OrganizationPermission::VIEW_CONSENTS,
+            OrganizationPermission::MANAGE_CONSENTS,
+            OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS,
+        ], true)) {
             return $patientId;
         }
 

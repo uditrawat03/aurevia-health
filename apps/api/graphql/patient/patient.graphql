@@ -110,8 +110,22 @@ type RegisterPatientPayload {
     duplicateCandidates: [PatientDuplicateCandidate!]!
 }
 
+"Minimal patient-locator projection. Sensitive contact/address/relationship fields require the patient privacy boundary."
+type PatientSearchItem {
+    id: ID!
+    organizationId: ID!
+    registrationFacilityId: ID!
+    givenName: String!
+    middleName: String
+    familyName: String!
+    preferredName: String
+    dateOfBirth: String!
+    sexAtBirth: SexAtBirth!
+    identifiers: [PatientIdentifier!]!
+}
+
 type PatientSearchResult {
-    items: [Patient!]!
+    items: [PatientSearchItem!]!
     total: Int!
 }
 

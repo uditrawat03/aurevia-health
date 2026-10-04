@@ -23,6 +23,13 @@ enum AuditAction: string
     case REVIEW_PATIENT_MERGES = 'REVIEW_PATIENT_MERGES';
     case REGISTER_PATIENT = 'REGISTER_PATIENT';
     case REQUEST_PATIENT_MERGE_REVIEW = 'REQUEST_PATIENT_MERGE_REVIEW';
+    case VIEW_CONSENTS = 'VIEW_CONSENTS';
+    case MANAGE_CONSENTS = 'MANAGE_CONSENTS';
+    case BREAK_GLASS_PATIENT_ACCESS = 'BREAK_GLASS_PATIENT_ACCESS';
+    case GRANT_PATIENT_CONSENT = 'GRANT_PATIENT_CONSENT';
+    case REVOKE_PATIENT_CONSENT = 'REVOKE_PATIENT_CONSENT';
+    case PRIVACY_DECISION = 'PRIVACY_DECISION';
+    case ACTIVATE_BREAK_GLASS = 'ACTIVATE_BREAK_GLASS';
 
     public static function fromOrganizationPermission(OrganizationPermission $permission): self
     {
@@ -36,6 +43,9 @@ enum AuditAction: string
             OrganizationPermission::VIEW_PATIENTS => self::VIEW_PATIENTS,
             OrganizationPermission::MANAGE_PATIENTS => self::MANAGE_PATIENTS,
             OrganizationPermission::REVIEW_PATIENT_MERGES => self::REVIEW_PATIENT_MERGES,
+            OrganizationPermission::VIEW_CONSENTS => self::VIEW_CONSENTS,
+            OrganizationPermission::MANAGE_CONSENTS => self::MANAGE_CONSENTS,
+            OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS => self::BREAK_GLASS_PATIENT_ACCESS,
         };
     }
 }

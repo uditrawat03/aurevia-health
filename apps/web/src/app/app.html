@@ -1,157 +1,31 @@
-@if (auth.user(); as currentUser) {
-<ah-app-shell>
-  <ah-sidebar [groups]="navGroups" />
+@if (auth.loading() && !auth.user()) {
+  <main class="flex min-h-screen items-center justify-center bg-[var(--ah-color-canvas)] px-4 py-10">
+    <div class="text-sm font-semibold text-slate-600" role="status">Restoring secure workspace…</div>
+  </main>
+} @else if (auth.user(); as currentUser) {
+  <ah-app-shell>
+    <ah-sidebar
+      [groups]="navGroups"
+      [userInitials]="userInitials()"
+      [userName]="currentUser.name"
+      [userContext]="currentUser.memberships[0]?.role ?? 'No active workspace'"
+    />
 
-  <ah-header>
-    <div ahHeaderContext>
-      <span class="font-semibold text-slate-700">Aurevia Health</span>
-      <span aria-hidden="true">/</span>
-      <span class="truncate">Overview</span>
-    </div>
-
-    <div ahHeaderActions class="flex items-center gap-1.5">
-      <span class="hidden text-[0.75rem] font-semibold text-slate-600 md:inline">{{ currentUser.name }}</span>
-      <ah-button size="sm" variant="ghost">Help</ah-button>
-      <ah-button size="sm">
-        Search
-        <span class="ah-kbd">⌘K</span>
-      </ah-button>
-      <ah-button size="sm" variant="ghost" (click)="logout()">Sign out</ah-button>
-    </div>
-  </ah-header>
-
-  <ah-page-header
-    title="Clinical operations"
-    subtitle="Reusable compact UI primitives for Aurevia Health workflows."
-  >
-    <div ahPageActions class="flex items-center gap-1.5">
-      <ah-button>Export</ah-button>
-      <ah-button variant="primary">New patient</ah-button>
-    </div>
-  </ah-page-header>
-
-  <ah-tabs
-    ariaLabel="Overview sections"
-    [activeId]="activeOverviewTab()"
-    [items]="overviewTabs"
-    (activeIdChange)="activeOverviewTab.set($event)"
-  />
-
-  <section class="ah-section ah-grid ah-grid-3" aria-label="Operational summary">
-    <ah-card [hoverable]="true">
-      <div class="ah-stat-label">Active encounters</div>
-      <div class="ah-stat-value">24</div>
-      <div class="mt-1.5"><ah-badge tone="success">Within capacity</ah-badge></div>
-    </ah-card>
-
-    <ah-card [hoverable]="true">
-      <div class="ah-stat-label">Waiting for review</div>
-      <div class="ah-stat-value">8</div>
-      <div class="mt-1.5"><ah-badge tone="warning">Attention</ah-badge></div>
-    </ah-card>
-
-    <ah-card [hoverable]="true">
-      <div class="ah-stat-label">Critical alerts</div>
-      <div class="ah-stat-value">2</div>
-      <div class="mt-1.5"><ah-badge tone="danger">Review now</ah-badge></div>
-    </ah-card>
-  </section>
-
-  <ah-card
-    class="ah-section"
-    title="Reusable UI primitives"
-    subtitle="Angular components now own behavior while Tailwind theme classes own the visual system."
-  >
-    <a ahCardActions class="ah-link" href="#guidelines">View guidelines</a>
-
-    <div class="grid gap-3 lg:grid-cols-2">
-      <div>
-        <div class="mb-1.5 text-[0.75rem] font-bold text-slate-700">Actions</div>
-        <div class="flex flex-wrap items-center gap-1.5">
-          <ah-button variant="primary">Primary</ah-button>
-          <ah-button>Secondary</ah-button>
-          <ah-button variant="ghost">Ghost</ah-button>
-          <ah-button variant="danger">Danger</ah-button>
-          <ah-button size="sm" variant="primary">Compact</ah-button>
-        </div>
+    <ah-header>
+      <div ahHeaderContext>
+        <span class="font-semibold text-slate-700">Aurevia Health</span>
+        <span aria-hidden="true">/</span>
+        <span class="truncate">Clinical workspace</span>
       </div>
 
-      <div>
-        <div class="mb-1.5 text-[0.75rem] font-bold text-slate-700">Status</div>
-        <div class="flex flex-wrap items-center gap-1.5">
-          <ah-badge>Scheduled</ah-badge>
-          <ah-badge tone="success">Complete</ah-badge>
-          <ah-badge tone="warning">Pending</ah-badge>
-          <ah-badge tone="danger">Critical</ah-badge>
-        </div>
+      <div ahHeaderActions class="flex items-center gap-1.5">
+        <span class="hidden text-[0.75rem] font-semibold text-slate-600 md:inline">{{ currentUser.name }}</span>
+        <ah-button size="sm" variant="ghost" (click)="logout()">Sign out</ah-button>
       </div>
+    </ah-header>
 
-      <ah-form-field forId="patient-search" label="Search patient">
-        <input id="patient-search" class="ah-input" type="search" placeholder="Name, MRN or identifier" />
-      </ah-form-field>
-
-      <ah-form-field forId="facility-filter" label="Facility">
-        <select id="facility-filter" class="ah-select">
-          <option>All facilities</option>
-          <option>North Campus</option>
-          <option>Central Clinic</option>
-        </select>
-      </ah-form-field>
-    </div>
-  </ah-card>
-
-  <section class="ah-section">
-    <div class="ah-toolbar">
-      <div>
-        <h2 class="ah-card-title">Recent activity</h2>
-        <div class="mt-0.5 text-[0.75rem] text-slate-500">Dense table rows for operational workflows.</div>
-      </div>
-
-      <ah-tabs
-        ariaLabel="Activity filter"
-        variant="pills"
-        [activeId]="activeActivityTab()"
-        [items]="activityTabs"
-        (activeIdChange)="activeActivityTab.set($event)"
-      />
-    </div>
-
-    <ah-table-shell>
-      <table class="ah-table">
-        <thead>
-          <tr>
-            <th>Area</th>
-            <th>Activity</th>
-            <th>Status</th>
-            <th>Updated</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td class="font-semibold text-slate-800">Scheduling</td>
-            <td>Appointment queue synchronized</td>
-            <td><ah-badge tone="success">Complete</ah-badge></td>
-            <td class="ah-muted">2 min ago</td>
-          </tr>
-          <tr>
-            <td class="font-semibold text-slate-800">Clinical</td>
-            <td>Unsigned documentation requires review</td>
-            <td><ah-badge tone="warning">Pending</ah-badge></td>
-            <td class="ah-muted">7 min ago</td>
-          </tr>
-          <tr>
-            <td class="font-semibold text-slate-800">Interoperability</td>
-            <td>Inbound message processing operational</td>
-            <td><ah-badge>Monitoring</ah-badge></td>
-            <td class="ah-muted">12 min ago</td>
-          </tr>
-        </tbody>
-      </table>
-    </ah-table-shell>
-  </section>
-
-  <router-outlet />
-</ah-app-shell>
+    <router-outlet />
+  </ah-app-shell>
 } @else {
   <main class="flex min-h-screen items-center justify-center bg-[var(--ah-color-canvas)] px-4 py-10">
     <section class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm" aria-labelledby="sign-in-title">

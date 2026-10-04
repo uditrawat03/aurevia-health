@@ -1,0 +1,136 @@
+"Patient-data category used by the generic consent/privacy policy."
+enum ConsentDataCategory {
+    DEMOGRAPHICS
+    CLINICAL
+    BILLING
+    RESEARCH
+}
+
+"Purpose of use for a patient-data privacy decision."
+enum ConsentPurpose {
+    TREATMENT
+    CARE_COORDINATION
+    OPERATIONS
+    BILLING
+    RESEARCH
+}
+
+"Recipient class for the requested patient-data use."
+enum ConsentRecipientClass {
+    CARE_TEAM
+    ORGANIZATION_STAFF
+    EXTERNAL_PROVIDER
+    RESEARCH_TEAM
+}
+
+enum ConsentStatus {
+    ACTIVE
+    REVOKED
+}
+
+enum PrivacyDecisionReason {
+    ACTIVE_CONSENT
+    BREAK_GLASS
+    NO_EFFECTIVE_CONSENT
+    COUNTRY_POLICY_DENIED
+}
+
+type PatientConsent {
+    id: ID!
+    organizationId: ID!
+    patientId: ID!
+    facilityId: ID
+    dataCategory: ConsentDataCategory!
+    purpose: ConsentPurpose!
+    recipientClass: ConsentRecipientClass!
+    status: ConsentStatus!
+    grantedByUserId: ID!
+    effectiveFrom: String!
+    effectiveUntil: String
+    revokedAt: String
+    revokedByUserId: ID
+    revocationReason: String
+    createdAt: String!
+    isEffective: Boolean!
+}
+
+type PrivacyDecision {
+    allowed: Boolean!
+    reason: PrivacyDecisionReason!
+    breakGlassAccessId: ID
+}
+
+type BreakGlassAccess {
+    id: ID!
+    organizationId: ID!
+    patientId: ID!
+    facilityId: ID!
+    actorUserId: ID!
+    purpose: ConsentPurpose!
+    reason: String!
+    activatedAt: String!
+    expiresAt: String!
+}
+
+input PatientConsentsInput {
+    organizationId: ID!
+    patientId: ID!
+}
+
+input GrantPatientConsentInput {
+    organizationId: ID!
+    patientId: ID!
+    "Null means organization-wide and therefore requires all-facility consent-management authority."
+    facilityId: ID
+    dataCategory: ConsentDataCategory!
+    purpose: ConsentPurpose!
+    recipientClass: ConsentRecipientClass!
+    effectiveFrom: String
+    effectiveUntil: String
+}
+
+input RevokePatientConsentInput {
+    organizationId: ID!
+    patientId: ID!
+    consentId: ID!
+    reason: String!
+}
+
+input PatientPrivacyDecisionInput {
+    organizationId: ID!
+    patientId: ID!
+    dataCategory: ConsentDataCategory!
+    purpose: ConsentPurpose!
+    recipientClass: ConsentRecipientClass!
+}
+
+input ActivateBreakGlassInput {
+    organizationId: ID!
+    patientId: ID!
+    purpose: ConsentPurpose!
+    reason: String!
+}
+
+extend type Query {
+    patientConsents(input: PatientConsentsInput!): [PatientConsent!]!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\PatientConsentsQuery")
+
+    patientPrivacyDecision(input: PatientPrivacyDecisionInput!): PrivacyDecision!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\PatientPrivacyDecisionQuery")
+}
+
+extend type Mutation {
+    grantPatientConsent(input: GrantPatientConsentInput!): PatientConsent!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\GrantPatientConsentMutation")
+
+    revokePatientConsent(input: RevokePatientConsentInput!): PatientConsent!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RevokePatientConsentMutation")
+
+    activateBreakGlass(input: ActivateBreakGlassInput!): BreakGlassAccess!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\ActivateBreakGlassMutation")
+}
