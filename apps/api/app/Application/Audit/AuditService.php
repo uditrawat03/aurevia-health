@@ -184,6 +184,8 @@ final readonly class AuditService
             OrganizationPermission::VIEW_SCHEDULE,
             OrganizationPermission::MANAGE_SCHEDULE => AuditResourceType::APPOINTMENT,
             OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION => AuditResourceType::SCHEDULING_RESOURCE,
+            OrganizationPermission::VIEW_ENCOUNTERS,
+            OrganizationPermission::MANAGE_ENCOUNTERS => AuditResourceType::ENCOUNTER,
             OrganizationPermission::VIEW_ORGANIZATION,
             OrganizationPermission::MANAGE_ORGANIZATION => $facilityId === null
                 ? AuditResourceType::ORGANIZATION
@@ -202,6 +204,8 @@ final readonly class AuditService
             OrganizationPermission::REVIEW_PATIENT_MERGES,
             OrganizationPermission::VIEW_SCHEDULE,
             OrganizationPermission::MANAGE_SCHEDULE,
+            OrganizationPermission::VIEW_ENCOUNTERS,
+            OrganizationPermission::MANAGE_ENCOUNTERS,
         ], true)) {
             return null;
         }

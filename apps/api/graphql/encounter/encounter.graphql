@@ -1,0 +1,95 @@
+"Country-neutral encounter type. Country profiles may tighten workflow policy without changing this core vocabulary."
+enum EncounterType {
+    OUTPATIENT
+    EMERGENCY
+    INPATIENT
+    VIRTUAL
+    OTHER
+}
+
+enum EncounterStatus {
+    PLANNED
+    ARRIVED
+    IN_PROGRESS
+    COMPLETED
+    CANCELLED
+}
+
+enum EncounterEventType {
+    CREATED
+    ARRIVED
+    STARTED
+    COMPLETED
+    CANCELLED
+}
+
+type EncounterEvent {
+    id: ID!
+    type: EncounterEventType!
+    fromStatus: EncounterStatus
+    toStatus: EncounterStatus!
+    reason: String
+    actorUserId: ID!
+    occurredAt: String!
+}
+
+type Encounter {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    patientDisplayName: String!
+    departmentId: ID
+    appointmentId: ID
+    type: EncounterType!
+    status: EncounterStatus!
+    arrivedAt: String
+    startedAt: String
+    endedAt: String
+    cancelledAt: String
+    cancellationReason: String
+    createdByUserId: ID!
+    createdAt: String!
+    events: [EncounterEvent!]!
+}
+
+input PatientEncountersInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+}
+
+input CreateEncounterInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    departmentId: ID
+    appointmentId: ID
+    type: EncounterType!
+}
+
+input TransitionEncounterInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    toStatus: EncounterStatus!
+    "Required when toStatus is CANCELLED."
+    reason: String
+}
+
+extend type Query {
+    encounters(input: PatientEncountersInput!): [Encounter!]!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\EncountersQuery")
+}
+
+extend type Mutation {
+    createEncounter(input: CreateEncounterInput!): Encounter!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateEncounterMutation")
+
+    transitionEncounter(input: TransitionEncounterInput!): Encounter!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\TransitionEncounterMutation")
+}

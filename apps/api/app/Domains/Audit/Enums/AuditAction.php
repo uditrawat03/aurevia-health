@@ -38,6 +38,13 @@ enum AuditAction: string
     case CANCEL_APPOINTMENT = 'CANCEL_APPOINTMENT';
     case JOIN_WAITLIST = 'JOIN_WAITLIST';
     case CANCEL_WAITLIST = 'CANCEL_WAITLIST';
+    case VIEW_ENCOUNTERS = 'VIEW_ENCOUNTERS';
+    case MANAGE_ENCOUNTERS = 'MANAGE_ENCOUNTERS';
+    case CREATE_ENCOUNTER = 'CREATE_ENCOUNTER';
+    case ARRIVE_ENCOUNTER = 'ARRIVE_ENCOUNTER';
+    case START_ENCOUNTER = 'START_ENCOUNTER';
+    case COMPLETE_ENCOUNTER = 'COMPLETE_ENCOUNTER';
+    case CANCEL_ENCOUNTER = 'CANCEL_ENCOUNTER';
 
     public static function fromOrganizationPermission(OrganizationPermission $permission): self
     {
@@ -57,6 +64,8 @@ enum AuditAction: string
             OrganizationPermission::VIEW_SCHEDULE => self::VIEW_SCHEDULE,
             OrganizationPermission::MANAGE_SCHEDULE => self::MANAGE_SCHEDULE,
             OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION => self::MANAGE_SCHEDULING_CONFIGURATION,
+            OrganizationPermission::VIEW_ENCOUNTERS => self::VIEW_ENCOUNTERS,
+            OrganizationPermission::MANAGE_ENCOUNTERS => self::MANAGE_ENCOUNTERS,
         };
     }
 }

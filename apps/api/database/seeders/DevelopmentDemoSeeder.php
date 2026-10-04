@@ -220,24 +220,26 @@ final class DevelopmentDemoSeeder extends Seeder
         Patient $patient,
         bool $revoked,
     ): void {
-        PatientConsent::query()->updateOrCreate(
-            [
-                'organization_id' => $organization->getKey(),
-                'patient_id' => $patient->getKey(),
-                'facility_id' => $facility->getKey(),
-                'data_category' => ConsentDataCategory::DEMOGRAPHICS->value,
-                'purpose' => ConsentPurpose::TREATMENT->value,
-                'recipient_class' => ConsentRecipientClass::CARE_TEAM->value,
-            ],
-            [
-                'status' => $revoked ? ConsentStatus::REVOKED->value : ConsentStatus::ACTIVE->value,
-                'granted_by_user_id' => $owner->getKey(),
-                'effective_from' => now()->subDay(),
-                'effective_until' => null,
-                'revoked_at' => $revoked ? now()->subHour() : null,
-                'revoked_by_user_id' => $revoked ? $owner->getKey() : null,
-                'revocation_reason' => $revoked ? 'Synthetic revoked-consent scenario' : null,
-            ],
-        );
+        foreach ([ConsentDataCategory::DEMOGRAPHICS, ConsentDataCategory::CLINICAL] as $category) {
+            PatientConsent::query()->updateOrCreate(
+                [
+                    'organization_id' => $organization->getKey(),
+                    'patient_id' => $patient->getKey(),
+                    'facility_id' => $facility->getKey(),
+                    'data_category' => $category->value,
+                    'purpose' => ConsentPurpose::TREATMENT->value,
+                    'recipient_class' => ConsentRecipientClass::CARE_TEAM->value,
+                ],
+                [
+                    'status' => $revoked ? ConsentStatus::REVOKED->value : ConsentStatus::ACTIVE->value,
+                    'granted_by_user_id' => $owner->getKey(),
+                    'effective_from' => now()->subDay(),
+                    'effective_until' => null,
+                    'revoked_at' => $revoked ? now()->subHour() : null,
+                    'revoked_by_user_id' => $revoked ? $owner->getKey() : null,
+                    'revocation_reason' => $revoked ? 'Synthetic revoked-consent scenario' : null,
+                ],
+            );
+        }
     }
 }

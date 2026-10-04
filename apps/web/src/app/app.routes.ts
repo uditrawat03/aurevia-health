@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuditPage } from './features/audit/audit.page';
+import { EncountersPage } from './features/encounters/encounters.page';
 import { OverviewPage } from './features/overview/overview.page';
 import { PatientDetailPage } from './features/patients/patient-detail.page';
 import { PatientRegisterPage } from './features/patients/patient-register.page';
@@ -17,14 +18,7 @@ export const routes: Routes = [
   { path: 'privacy', component: PrivacyPage },
   { path: 'audit', component: AuditPage },
   { path: 'scheduling', component: SchedulingPage },
-  {
-    path: 'encounters',
-    component: PlaceholderPage,
-    data: {
-      title: 'Encounters',
-      description: 'Encounter workflows become functional in V1-M7.',
-    },
-  },
+  { path: 'encounters', component: EncountersPage },
   {
     path: 'work-queues',
     component: PlaceholderPage,

@@ -9,3 +9,4 @@ type Query {
 #import patient/*.graphql
 #import privacy/*.graphql
 #import scheduling/*.graphql
+#import encounter/*.graphql

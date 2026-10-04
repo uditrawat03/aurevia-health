@@ -33,6 +33,13 @@ enum AuditAction {
     CANCEL_APPOINTMENT
     JOIN_WAITLIST
     CANCEL_WAITLIST
+    VIEW_ENCOUNTERS
+    MANAGE_ENCOUNTERS
+    CREATE_ENCOUNTER
+    ARRIVE_ENCOUNTER
+    START_ENCOUNTER
+    COMPLETE_ENCOUNTER
+    CANCEL_ENCOUNTER
 }
 
 "Generic resource classification kept independent from country-specific identifiers."
@@ -51,6 +58,7 @@ enum AuditResourceType {
     SCHEDULING_RESOURCE
     APPOINTMENT_TYPE
     WAITLIST_ENTRY
+    ENCOUNTER
 }
 
 "Append-oriented evidence for a protected operation or security-relevant denial."
