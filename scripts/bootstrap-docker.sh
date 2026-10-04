@@ -20,7 +20,7 @@ docker compose -f "$COMPOSE_FILE" --profile tools run --rm php-tooling \
   composer create-project laravel/laravel:^13.0 api
 
 docker compose -f "$COMPOSE_FILE" --profile tools run --rm php-tooling sh -lc \
-  'cd api && php artisan install:api && composer require laravel/horizon && php artisan horizon:install && mkdir -p app/Domains app/CountryProfiles/Core app/Application app/Infrastructure && for d in Organization Identity Patient Consent Scheduling Encounter Clinical Orders Medication Laboratory Imaging Surgery Pharmacy Billing Coverage Authorization HIM Inventory Workforce Terminology Interoperability Workflow Notification Audit Analytics AI; do mkdir -p "app/Domains/$d"; done'
+  'cd api && composer require laravel/sanctum laravel/horizon "nuwave/lighthouse:^6.71" && php artisan horizon:install && mkdir -p app/Domains app/CountryProfiles/Core app/Application app/Infrastructure && for d in Organization Identity Patient Consent Scheduling Encounter Clinical Orders Medication Laboratory Imaging Surgery Pharmacy Billing Coverage Authorization HIM Inventory Workforce Terminology Interoperability Workflow Notification Audit Analytics AI; do mkdir -p "app/Domains/$d"; done'
 
 docker compose -f "$COMPOSE_FILE" --profile tools run --rm node-tooling \
   npx -y @angular/cli@22 new web \

@@ -22,8 +22,8 @@ echo ==^> Creating Laravel 13 API
 docker compose -f "%COMPOSE_FILE%" --profile tools run --rm php-tooling composer create-project laravel/laravel:^13.0 api
 if errorlevel 1 exit /b %ERRORLEVEL%
 
-echo ==^> Installing Laravel API and Horizon support
-docker compose -f "%COMPOSE_FILE%" --profile tools run --rm php-tooling sh -lc "cd api && php artisan install:api && composer require laravel/horizon && php artisan horizon:install && mkdir -p app/Domains app/CountryProfiles/Core app/Application app/Infrastructure && for d in Organization Identity Patient Consent Scheduling Encounter Clinical Orders Medication Laboratory Imaging Surgery Pharmacy Billing Coverage Authorization HIM Inventory Workforce Terminology Interoperability Workflow Notification Audit Analytics AI; do mkdir -p \"app/Domains/$d\"; done"
+echo ==^> Installing Sanctum, Lighthouse, and Horizon support
+docker compose -f "%COMPOSE_FILE%" --profile tools run --rm php-tooling sh -lc "cd api && composer require laravel/sanctum laravel/horizon 'nuwave/lighthouse:^6.71' && php artisan horizon:install && mkdir -p app/Domains app/CountryProfiles/Core app/Application app/Infrastructure && for d in Organization Identity Patient Consent Scheduling Encounter Clinical Orders Medication Laboratory Imaging Surgery Pharmacy Billing Coverage Authorization HIM Inventory Workforce Terminology Interoperability Workflow Notification Audit Analytics AI; do mkdir -p \"app/Domains/$d\"; done"
 if errorlevel 1 exit /b %ERRORLEVEL%
 
 echo ==^> Creating Angular 22 application

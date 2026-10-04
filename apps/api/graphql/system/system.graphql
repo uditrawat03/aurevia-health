@@ -1,0 +1,6 @@
+"Stable application metadata that is safe to expose to first-party clients."
+type SystemInfo {
+    name: String!
+    version: String!
+    graphqlEndpoint: String!
+}

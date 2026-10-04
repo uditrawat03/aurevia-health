@@ -1,4 +1,4 @@
 {
-  "/api": {"target": "http://api:8000", "secure": false, "changeOrigin": false},
+  "/graphql": {"target": "http://api:8000", "secure": false, "changeOrigin": false},
   "/sanctum": {"target": "http://api:8000", "secure": false, "changeOrigin": false}
 }

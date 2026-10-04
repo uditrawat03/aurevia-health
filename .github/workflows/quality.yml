@@ -75,6 +75,9 @@ jobs:
       - name: Migrate
         run: php artisan migrate --force
 
+      - name: Validate GraphQL schema
+        run: php artisan lighthouse:validate-schema
+
       - name: Test
         run: php artisan test
 

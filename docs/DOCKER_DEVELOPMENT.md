@@ -38,6 +38,8 @@ Override host ports with `WEB_PORT`, `API_PORT`, `POSTGRES_PORT`, or `REDIS_PORT
 
 PostgreSQL and Redis use named data volumes. Laravel `vendor` and Angular `node_modules` also use named volumes so Windows host dependencies are not mixed with Linux container dependencies. Application source is bind-mounted for fast editing.
 
+The Docker application profile explicitly uses Redis for Laravel cache, queues, and sessions. This is also important for Lighthouse because its parsed-query cache uses Laravel's default cache store. Do not leave `CACHE_STORE=database` in the Docker runtime unless the database cache tables are intentionally provisioned and the architecture decision is changed.
+
 ## Docker-first Application Bootstrap
 
 On Windows, the Docker bootstrap avoids PowerShell execution-policy requirements and does not require host PHP/Composer/Node installations:
@@ -52,7 +54,7 @@ On macOS/Linux:
 scripts/bootstrap-docker.sh
 ```
 
-The command uses the `tools` profile to generate Laravel 13, install Sanctum/API support and Horizon, create the initial domain directories, and generate Angular 22 with routing, SCSS, strict mode, standalone APIs, zoneless mode, and Vitest.
+The command uses the `tools` profile to generate Laravel 13, install Sanctum, Lighthouse, and Horizon, create the initial domain directories, and generate Angular 22 with routing, SCSS, strict mode, standalone APIs, zoneless mode, and Vitest.
 
 It refuses to overwrite an existing `apps/api` or `apps/web` application.
 
@@ -82,10 +84,11 @@ Open:
 
 - Angular: `http://localhost:4200`
 - Laravel health endpoint: `http://localhost:8000/up`
+- GraphQL endpoint: `http://localhost:8000/graphql`
 
-## Angular API Proxy
+## Angular GraphQL Proxy
 
-The Angular dev server proxies `/api` and `/sanctum` to `http://api:8000`. Browser code can use relative API URLs without knowing Docker service hostnames.
+The Angular dev server proxies `/graphql` and `/sanctum` to `http://api:8000`. First-party feature code uses the typed GraphQL client boundary; generic `/api` domain traffic is intentionally not proxied.
 
 ## Migrations
 
@@ -100,6 +103,16 @@ scripts\docker.cmd migrate
 ```cmd
 scripts\docker.cmd test
 ```
+
+## Verify Runtime Stores
+
+After changing Docker or Laravel environment configuration, verify the effective stores:
+
+```powershell
+docker exec aurevia-health-api php artisan tinker --execute="dump(config('cache.default'), config('queue.default'), config('session.driver'));"
+```
+
+The Docker application profile should report `redis` for all three values. If the API or Horizon logs show `relation "cache" does not exist`, the runtime is still using Laravel's database cache driver and the application containers should be recreated after applying the current Compose configuration.
 
 ## Status and Logs
 
@@ -122,6 +135,12 @@ After Composer dependency changes:
 
 ```powershell
 docker compose -f .\infrastructure\docker\compose.yml --profile app exec api composer install
+```
+
+For the GraphQL foundation dependency update:
+
+```cmd
+scripts\graphql.cmd
 ```
 
 After npm dependency changes:

@@ -1,0 +1,5 @@
+type Query {
+    systemInfo: SystemInfo! @field(resolver: "App\\GraphQL\\Queries\\SystemInfoQuery")
+}
+
+#import system/*.graphql

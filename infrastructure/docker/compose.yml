@@ -59,6 +59,9 @@ services:
       REDIS_CLIENT: phpredis
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
       SESSION_DOMAIN: localhost
       SANCTUM_STATEFUL_DOMAINS: localhost:${WEB_PORT:-4200},127.0.0.1:${WEB_PORT:-4200}
     ports:
@@ -99,6 +102,9 @@ services:
       REDIS_CLIENT: phpredis
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
     volumes:
       - ../../apps/api:/var/www/html
       - aurevia_health_api_vendor:/var/www/html/vendor

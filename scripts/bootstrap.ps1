@@ -27,8 +27,7 @@ Remove-Item "apps/api" -Force -Recurse -ErrorAction SilentlyContinue
 composer create-project laravel/laravel:^13.0 apps/api
 
 Push-Location "apps/api"
-php artisan install:api
-composer require laravel/horizon
+composer require laravel/sanctum laravel/horizon "nuwave/lighthouse:^6.71"
 php artisan horizon:install
 
 $domainDirs = @(

@@ -30,6 +30,7 @@ The platform should:
 - Laravel 13.x
 - PHP 8.5 recommended
 - Laravel Sanctum for first-party SPA authentication
+- Nuwave Lighthouse 6.x for the GraphQL application boundary
 - Laravel queues
 - Laravel Horizon with Redis
 - PostgreSQL
@@ -290,6 +291,24 @@ Guidelines:
 - audit semantics for protected operations.
 
 GraphQL does not replace protocol-specific HTTP boundaries. Health/readiness endpoints, Sanctum CSRF/session bootstrap, OAuth/OIDC/SAML callbacks, inbound webhooks, signed object-storage handoffs, metrics where required, and FHIR/HL7/DICOM/EDI/partner REST adapters remain separate explicit boundaries. These exceptions must not become a backdoor for ordinary application CRUD.
+
+### GraphQL implementation baseline
+
+The Laravel GraphQL server uses **Nuwave Lighthouse 6.x**. The initial boundary enforces Laravel `web` middleware for session/CSRF semantics, uses the `web` authentication guard, attaches correlation IDs to responses/errors, enables relationship batch loading, and sets explicit query depth/complexity and pagination limits.
+
+```text
+GraphQL resolver
+      ↓
+Application service / query
+      ↓
+Model or repository
+      ↓
+PostgreSQL
+```
+
+Resolvers must not query Eloquent directly. Protected schema fields use server-side authorization. Domain schema files are composed below `apps/api/graphql/`, and CI validates the schema before running backend tests.
+
+The committed application must not register Laravel's generated `/api/user` starter route. Angular development proxies `/graphql` and `/sanctum`, not generic `/api` domain traffic.
 
 ## 17. Domain Events
 

@@ -22,8 +22,7 @@ rm -rf apps/api
 composer create-project laravel/laravel:^13.0 apps/api
 
 pushd apps/api >/dev/null
-php artisan install:api
-composer require laravel/horizon
+composer require laravel/sanctum laravel/horizon "nuwave/lighthouse:^6.71"
 php artisan horizon:install
 
 mkdir -p app/Domains/{Organization,Identity,Patient,Consent,Scheduling,Encounter,Clinical,Orders,Medication,Laboratory,Imaging,Surgery,Pharmacy,Billing,Coverage,Authorization,HIM,Inventory,Workforce,Terminology,Interoperability,Workflow,Notification,Audit,Analytics,AI}

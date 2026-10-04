@@ -29,6 +29,7 @@ Aurevia Health is the official name used for product, architecture, roadmap, mil
 | Database | PostgreSQL 18 |
 | Cache / queues | Redis 8 |
 | API authentication | Laravel Sanctum, first-party SPA session/cookie model |
+| GraphQL server | Nuwave Lighthouse 6.x |
 | Local orchestration | Docker Compose |
 | API style | GraphQL-first application API at `/graphql`, with protocol/interoperability HTTP adapters kept separate |
 | Architecture | Modular monolith first, event-driven boundaries |
@@ -150,7 +151,7 @@ bash ./scripts/bootstrap.sh
 The bootstrap script:
 
 1. creates a fresh Laravel 13 application in `apps/api`;
-2. enables Laravel API routing / Sanctum;
+2. installs Laravel Sanctum and Nuwave Lighthouse for the first-party GraphQL boundary;
 3. installs Laravel Horizon for Redis queue operations;
 4. creates the initial healthcare domain folders;
 5. creates an Angular 22 application in `apps/web`;
@@ -197,6 +198,8 @@ Development endpoints:
 | Angular | `http://localhost:4200` |
 | Laravel | `http://localhost:8000` |
 | Laravel health | `http://localhost:8000/up` |
+| GraphQL | `http://localhost:8000/graphql` |
+| Angular GraphQL proxy | `http://localhost:4200/graphql` |
 | PostgreSQL | `127.0.0.1:5432` |
 | Redis | `127.0.0.1:6379` |
 
@@ -211,6 +214,40 @@ scripts\docker.cmd down
 ```
 
 The Windows `.cmd` helper does not depend on PowerShell script execution policy. See [docs/DOCKER_DEVELOPMENT.md](docs/DOCKER_DEVELOPMENT.md) for details.
+
+## GraphQL Backend Foundation
+
+Aurevia Health uses **Nuwave Lighthouse 6.x** for the Laravel GraphQL server. The first-party application endpoint is `/graphql`; ordinary domain CRUD must not add parallel `/api/v1/...` routes.
+
+After applying GraphQL dependency changes with the Docker application stack running:
+
+```cmd
+scripts\graphql.cmd
+```
+
+The command updates `apps/api/composer.lock`, clears Laravel caches, and validates the GraphQL schema. Commit the resulting lockfile with the milestone.
+
+Verify the backend boundary:
+
+```powershell
+docker exec aurevia-health-api php artisan lighthouse:validate-schema
+docker exec aurevia-health-api php artisan test
+docker exec aurevia-health-api composer audit
+```
+
+The initial query is intentionally non-clinical:
+
+```graphql
+query {
+  systemInfo {
+    name
+    version
+    graphqlEndpoint
+  }
+}
+```
+
+See [docs/GRAPHQL_BACKEND.md](docs/GRAPHQL_BACKEND.md) for resolver, security, correlation-ID, and schema conventions.
 
 ## Run Applications on the Host
 
@@ -315,6 +352,7 @@ Start with:
 - [docs/ADR_TEMPLATE.md](docs/ADR_TEMPLATE.md) — architecture decision record template.
 - [docs/TECH_BASELINE.md](docs/TECH_BASELINE.md) — framework/runtime baseline and upgrade policy.
 - [docs/DOCKER_DEVELOPMENT.md](docs/DOCKER_DEVELOPMENT.md) — local Docker architecture and commands.
+- [docs/GRAPHQL_BACKEND.md](docs/GRAPHQL_BACKEND.md) — GraphQL server, resolver, security, and testing conventions.
 - [SECURITY.md](SECURITY.md) — repository security expectations and release blockers.
 
 ## Initial Definition of Ready
