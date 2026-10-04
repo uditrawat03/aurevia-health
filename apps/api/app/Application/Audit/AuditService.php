@@ -186,6 +186,8 @@ final readonly class AuditService
             OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION => AuditResourceType::SCHEDULING_RESOURCE,
             OrganizationPermission::VIEW_ENCOUNTERS,
             OrganizationPermission::MANAGE_ENCOUNTERS => AuditResourceType::ENCOUNTER,
+            OrganizationPermission::VIEW_CLINICAL_RECORD,
+            OrganizationPermission::MANAGE_CLINICAL_RECORD => AuditResourceType::CLINICAL_RECORD,
             OrganizationPermission::VIEW_ORGANIZATION,
             OrganizationPermission::MANAGE_ORGANIZATION => $facilityId === null
                 ? AuditResourceType::ORGANIZATION
@@ -216,6 +218,8 @@ final readonly class AuditService
             OrganizationPermission::VIEW_CONSENTS,
             OrganizationPermission::MANAGE_CONSENTS,
             OrganizationPermission::BREAK_GLASS_PATIENT_ACCESS,
+            OrganizationPermission::VIEW_CLINICAL_RECORD,
+            OrganizationPermission::MANAGE_CLINICAL_RECORD,
         ], true)) {
             return $patientId;
         }

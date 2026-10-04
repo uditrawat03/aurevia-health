@@ -21,6 +21,9 @@ import { AhCardComponent, AhTableShellComponent } from '../../shared/ui';
     <ah-page-header title="Patient record" subtitle="Live patient context loaded through the protected GraphQL read boundary.">
       <div ahPageActions class="flex items-center gap-3">
         <a class="ah-link font-semibold" routerLink="/patients">Back to patients</a>
+        @if (patient(); as currentPatient) {
+          <a class="ah-link font-semibold" [routerLink]="['/patients', currentPatient.id, 'clinical']">Clinical record</a>
+        }
         <a class="ah-link font-semibold" routerLink="/privacy">Privacy & consent</a>
       </div>
     </ah-page-header>

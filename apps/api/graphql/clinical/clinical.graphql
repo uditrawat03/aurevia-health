@@ -1,0 +1,268 @@
+"Problem-list status is longitudinal and independent of country-specific terminology."
+enum ProblemStatus {
+    ACTIVE
+    INACTIVE
+    RESOLVED
+}
+
+enum AllergyStatus {
+    ACTIVE
+    INACTIVE
+    RESOLVED
+}
+
+enum AllergyVerificationStatus {
+    UNVERIFIED
+    CONFIRMED
+    REFUTED
+    ENTERED_IN_ERROR
+}
+
+enum AllergySeverity {
+    UNKNOWN
+    MILD
+    MODERATE
+    SEVERE
+}
+
+enum ClinicalNoteStatus {
+    DRAFT
+    SIGNED
+}
+
+enum ClinicalNoteAmendmentType {
+    ADDENDUM
+    CORRECTION
+}
+
+type ClinicalProblem {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    codeSystem: String
+    code: String
+    display: String!
+    status: ProblemStatus!
+    onsetDate: String
+    resolvedAt: String
+    recordedByUserId: ID!
+    recordedAt: String!
+}
+
+type PatientAllergy {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    codeSystem: String
+    code: String
+    substance: String!
+    reaction: String
+    severity: AllergySeverity!
+    status: AllergyStatus!
+    verificationStatus: AllergyVerificationStatus!
+    recordedByUserId: ID!
+    recordedAt: String!
+}
+
+type ClinicalObservation {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    codeSystem: String
+    code: String!
+    display: String!
+    valueNumeric: Float
+    valueText: String
+    unit: String
+    effectiveAt: String!
+    recordedByUserId: ID!
+    recordedAt: String!
+}
+
+type ClinicalNoteAmendment {
+    id: ID!
+    type: ClinicalNoteAmendmentType!
+    body: String!
+    reason: String
+    authorUserId: ID!
+    createdAt: String!
+}
+
+type ClinicalNote {
+    id: ID!
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    noteType: String!
+    title: String
+    body: String!
+    status: ClinicalNoteStatus!
+    authorUserId: ID!
+    signedByUserId: ID
+    signedAt: String
+    createdAt: String!
+    updatedAt: String!
+    amendments: [ClinicalNoteAmendment!]!
+}
+
+type PatientTimelineEvent {
+    id: ID!
+    type: String!
+    label: String!
+    resourceType: String!
+    resourceId: ID!
+    encounterId: ID
+    actorUserId: ID!
+    occurredAt: String!
+}
+
+type ClinicalRecord {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    problems: [ClinicalProblem!]!
+    allergies: [PatientAllergy!]!
+    observations: [ClinicalObservation!]!
+    notes: [ClinicalNote!]!
+    timeline: [PatientTimelineEvent!]!
+}
+
+input PatientClinicalRecordInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+}
+
+input RecordProblemInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    codeSystem: String
+    code: String
+    display: String!
+    status: ProblemStatus! = ACTIVE
+    onsetDate: String
+}
+
+input UpdateProblemStatusInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    problemId: ID!
+    status: ProblemStatus!
+}
+
+input RecordAllergyInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    codeSystem: String
+    code: String
+    substance: String!
+    reaction: String
+    severity: AllergySeverity! = UNKNOWN
+    status: AllergyStatus! = ACTIVE
+    verificationStatus: AllergyVerificationStatus! = UNVERIFIED
+}
+
+input RecordObservationInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    codeSystem: String
+    code: String!
+    display: String!
+    valueNumeric: Float
+    valueText: String
+    unit: String
+    effectiveAt: String
+}
+
+input CreateClinicalNoteInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    noteType: String!
+    title: String
+    body: String!
+}
+
+input UpdateClinicalNoteDraftInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    noteId: ID!
+    title: String
+    body: String!
+}
+
+input SignClinicalNoteInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    noteId: ID!
+}
+
+input AddClinicalNoteAmendmentInput {
+    organizationId: ID!
+    facilityId: ID!
+    patientId: ID!
+    encounterId: ID!
+    noteId: ID!
+    type: ClinicalNoteAmendmentType!
+    body: String!
+    reason: String
+}
+
+extend type Query {
+    clinicalRecord(input: PatientClinicalRecordInput!): ClinicalRecord!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\ClinicalRecordQuery")
+}
+
+extend type Mutation {
+    recordProblem(input: RecordProblemInput!): ClinicalProblem!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RecordProblemMutation")
+
+    updateProblemStatus(input: UpdateProblemStatusInput!): ClinicalProblem!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\UpdateProblemStatusMutation")
+
+    recordAllergy(input: RecordAllergyInput!): PatientAllergy!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RecordAllergyMutation")
+
+    recordObservation(input: RecordObservationInput!): ClinicalObservation!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RecordObservationMutation")
+
+    createClinicalNote(input: CreateClinicalNoteInput!): ClinicalNote!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\CreateClinicalNoteMutation")
+
+    updateClinicalNoteDraft(input: UpdateClinicalNoteDraftInput!): ClinicalNote!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\UpdateClinicalNoteDraftMutation")
+
+    signClinicalNote(input: SignClinicalNoteInput!): ClinicalNote!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\SignClinicalNoteMutation")
+
+    addClinicalNoteAmendment(input: AddClinicalNoteAmendmentInput!): ClinicalNote!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\AddClinicalNoteAmendmentMutation")
+}

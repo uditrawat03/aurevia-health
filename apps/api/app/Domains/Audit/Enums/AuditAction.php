@@ -45,6 +45,17 @@ enum AuditAction: string
     case START_ENCOUNTER = 'START_ENCOUNTER';
     case COMPLETE_ENCOUNTER = 'COMPLETE_ENCOUNTER';
     case CANCEL_ENCOUNTER = 'CANCEL_ENCOUNTER';
+    case VIEW_CLINICAL_RECORD = 'VIEW_CLINICAL_RECORD';
+    case MANAGE_CLINICAL_RECORD = 'MANAGE_CLINICAL_RECORD';
+    case RECORD_PROBLEM = 'RECORD_PROBLEM';
+    case UPDATE_PROBLEM_STATUS = 'UPDATE_PROBLEM_STATUS';
+    case RECORD_ALLERGY = 'RECORD_ALLERGY';
+    case RECORD_OBSERVATION = 'RECORD_OBSERVATION';
+    case CREATE_CLINICAL_NOTE = 'CREATE_CLINICAL_NOTE';
+    case UPDATE_CLINICAL_NOTE_DRAFT = 'UPDATE_CLINICAL_NOTE_DRAFT';
+    case SIGN_CLINICAL_NOTE = 'SIGN_CLINICAL_NOTE';
+    case ADD_CLINICAL_NOTE_ADDENDUM = 'ADD_CLINICAL_NOTE_ADDENDUM';
+    case CORRECT_CLINICAL_NOTE = 'CORRECT_CLINICAL_NOTE';
 
     public static function fromOrganizationPermission(OrganizationPermission $permission): self
     {
@@ -66,6 +77,8 @@ enum AuditAction: string
             OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION => self::MANAGE_SCHEDULING_CONFIGURATION,
             OrganizationPermission::VIEW_ENCOUNTERS => self::VIEW_ENCOUNTERS,
             OrganizationPermission::MANAGE_ENCOUNTERS => self::MANAGE_ENCOUNTERS,
+            OrganizationPermission::VIEW_CLINICAL_RECORD => self::VIEW_CLINICAL_RECORD,
+            OrganizationPermission::MANAGE_CLINICAL_RECORD => self::MANAGE_CLINICAL_RECORD,
         };
     }
 }

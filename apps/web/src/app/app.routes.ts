@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuditPage } from './features/audit/audit.page';
+import { ClinicalRecordPage } from './features/clinical/clinical-record.page';
 import { EncountersPage } from './features/encounters/encounters.page';
 import { OverviewPage } from './features/overview/overview.page';
 import { PatientDetailPage } from './features/patients/patient-detail.page';
@@ -15,6 +16,7 @@ export const routes: Routes = [
   { path: 'patients', component: PatientsPage },
   { path: 'patients/new', component: PatientRegisterPage },
   { path: 'patients/:patientId', component: PatientDetailPage },
+  { path: 'patients/:patientId/clinical', component: ClinicalRecordPage },
   { path: 'privacy', component: PrivacyPage },
   { path: 'audit', component: AuditPage },
   { path: 'scheduling', component: SchedulingPage },

@@ -10,3 +10,4 @@ type Query {
 #import privacy/*.graphql
 #import scheduling/*.graphql
 #import encounter/*.graphql
+#import clinical/*.graphql

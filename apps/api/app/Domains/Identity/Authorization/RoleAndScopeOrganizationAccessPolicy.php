@@ -55,6 +55,8 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::MANAGE_SCHEDULING_CONFIGURATION,
                 OrganizationPermission::VIEW_ENCOUNTERS,
                 OrganizationPermission::MANAGE_ENCOUNTERS,
+                OrganizationPermission::VIEW_CLINICAL_RECORD,
+                OrganizationPermission::MANAGE_CLINICAL_RECORD,
             ],
             OrganizationRole::CLINICIAN => [
                 OrganizationPermission::VIEW_ORGANIZATION,
@@ -66,6 +68,8 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::VIEW_SCHEDULE,
                 OrganizationPermission::VIEW_ENCOUNTERS,
                 OrganizationPermission::MANAGE_ENCOUNTERS,
+                OrganizationPermission::VIEW_CLINICAL_RECORD,
+                OrganizationPermission::MANAGE_CLINICAL_RECORD,
             ],
             OrganizationRole::STAFF => [
                 OrganizationPermission::VIEW_ORGANIZATION,
@@ -78,6 +82,7 @@ final readonly class RoleAndScopeOrganizationAccessPolicy implements Organizatio
                 OrganizationPermission::MANAGE_SCHEDULE,
                 OrganizationPermission::VIEW_ENCOUNTERS,
                 OrganizationPermission::MANAGE_ENCOUNTERS,
+                OrganizationPermission::VIEW_CLINICAL_RECORD,
             ],
             OrganizationRole::VIEWER => [
                 OrganizationPermission::VIEW_ORGANIZATION,
