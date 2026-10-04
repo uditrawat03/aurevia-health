@@ -276,19 +276,17 @@ cd apps/web
 npm start
 ```
 
-## First-Party Authentication Direction
+## Identity, Authentication and Authorization Foundation
 
-The browser application should use **Laravel Sanctum's SPA session/cookie authentication** rather than storing long-lived bearer tokens in browser storage.
+V1-M2 protects the first-party GraphQL boundary with Laravel Sanctum's stateful `web` session, explicit CSRF bootstrap, organization memberships, role permissions, facility scope, and an ABAC-style policy contract. The Angular shell does not store bearer tokens in browser storage; it restores the authenticated user through `me`, signs in through the GraphQL `login` mutation after `/sanctum/csrf-cookie`, and invalidates the current server session through `logout`.
 
-Important design constraints:
+Organization creation now requires an authenticated user and atomically assigns that user an active `OWNER` membership with all-facility scope. Existing organization reads and mutations require active organization membership plus the permission and facility scope appropriate to the operation. Cross-organization access, unselected facility access, and revoked memberships are denied server-side.
 
-- never treat Angular route guards as authorization;
-- enforce authorization in Laravel policies / domain authorization services;
-- avoid long-lived authentication tokens in `localStorage`;
-- use CSRF protection;
-- use secure, HTTP-only cookies in deployed environments;
-- use MFA and enterprise SSO when introduced;
-- maintain explicit session revocation and audit.
+Initial roles are `OWNER`, `ADMIN`, `CLINICIAN`, `STAFF`, and `VIEWER`. Role permissions are evaluated together with organization/facility attributes rather than relying on Angular route state. All-facility organization owners and administrators can assign or revoke memberships through typed GraphQL mutations.
+
+This foundation intentionally does not implement MFA, enterprise OIDC/SAML, password recovery, remote-session inventory, or clinical/patient-context ABAC attributes yet. Those capabilities extend this boundary without changing the rule that Laravel remains authoritative for authorization.
+
+See [docs/IDENTITY_AUTHORIZATION.md](docs/IDENTITY_AUTHORIZATION.md) for the session flow, role/permission matrix, facility scoping, GraphQL operations, test expectations, and current limitations.
 
 ## Development Principles
 

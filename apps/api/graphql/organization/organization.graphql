@@ -150,25 +150,32 @@ input UpdateOperationalSettingsInput {
 
 extend type Query {
     organization(id: ID!): Organization!
+        @guard
         @field(resolver: "App\\GraphQL\\Queries\\OrganizationQuery")
 
     resolvedOperationalSettings(input: ResolveOperationalSettingsInput!): ResolvedOperationalSettings!
+        @guard
         @field(resolver: "App\\GraphQL\\Queries\\ResolvedOperationalSettingsQuery")
 }
 
 type Mutation {
     createOrganization(input: CreateOrganizationInput!): Organization!
+        @guard
         @field(resolver: "App\\GraphQL\\Mutations\\CreateOrganizationMutation")
 
     createHealthSystem(input: CreateHealthSystemInput!): HealthSystem!
+        @guard
         @field(resolver: "App\\GraphQL\\Mutations\\CreateHealthSystemMutation")
 
     createFacility(input: CreateFacilityInput!): Facility!
+        @guard
         @field(resolver: "App\\GraphQL\\Mutations\\CreateFacilityMutation")
 
     createDepartment(input: CreateDepartmentInput!): Department!
+        @guard
         @field(resolver: "App\\GraphQL\\Mutations\\CreateDepartmentMutation")
 
     updateOperationalSettings(input: UpdateOperationalSettingsInput!): UpdatedOperationalSettings!
+        @guard
         @field(resolver: "App\\GraphQL\\Mutations\\UpdateOperationalSettingsMutation")
 }

@@ -6,12 +6,20 @@ namespace Tests\Feature\GraphQL;
 
 use App\Domains\Organization\Enums\ConfigurationSource;
 use App\Domains\Organization\Enums\WeekStart;
+use App\Models\User;
 use Tests\IntegrationTestCase;
 use Tests\Support\InteractsWithGraphQL;
 
 final class OrganizationFoundationTest extends IntegrationTestCase
 {
     use InteractsWithGraphQL;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->actingAs(User::factory()->create());
+    }
 
     private const string CREATE_ORGANIZATION_MUTATION = <<<'GRAPHQL'
         mutation CreateOrganization($input: CreateOrganizationInput!) {

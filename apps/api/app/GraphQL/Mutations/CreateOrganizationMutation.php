@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\GraphQL\Mutations;
 
-use App\Application\Organization\OrganizationService;
+use App\Application\Identity\OrganizationOnboardingService;
 use App\Domains\Organization\Data\CreateOrganizationData;
 use App\Domains\Organization\Data\OrganizationData;
 use App\Domains\Organization\ValueObjects\CountryCode;
@@ -13,7 +13,7 @@ use App\GraphQL\Inputs\OperationalSettingsInputMapper;
 final readonly class CreateOrganizationMutation
 {
     public function __construct(
-        private OrganizationService $organizations,
+        private OrganizationOnboardingService $onboarding,
         private OperationalSettingsInputMapper $settingsMapper,
     ) {}
 
@@ -26,7 +26,7 @@ final readonly class CreateOrganizationMutation
     {
         $input = $args['input'];
 
-        return $this->organizations->createOrganization(new CreateOrganizationData(
+        return $this->onboarding->createOrganization(new CreateOrganizationData(
             name: $input['name'],
             slug: $input['slug'],
             countryCode: CountryCode::fromString($input['countryCode']),

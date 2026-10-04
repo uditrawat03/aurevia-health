@@ -106,15 +106,15 @@ Inputs and outputs are explicitly typed. The configuration boundary does not exp
 
 ## Isolation Rules
 
-Organization IDs are treated as scope, not authorization. Repository lookups for child resources include the owning organization, and application services reject parent/child combinations from different organizations.
+Organization IDs are scope identifiers, never authorization evidence. Repository lookups for child resources continue to include the owning organization, and V1-M2 now adds authenticated membership checks before GraphQL organization data reaches those application services.
 
-V1-M1 establishes structural tenant isolation, but it does not yet establish user authorization. V1-M2 adds identity, organization membership, RBAC/ABAC, and authenticated GraphQL protection.
+Full organization hierarchy reads require all-facility scope so a facility-restricted user cannot discover sibling facilities. Resolved operational settings may be read only for a facility included in the actor's membership scope. Organization-wide administration remains restricted to memberships with the required role permission and all-facility scope.
 
-## Current Security Limitation
+## Authorization Boundary
 
-The V1-M1 organization mutations are intentionally **not production-ready as standalone endpoints**. V1-M2 has not yet introduced the authenticated organization membership and authorization model required to restrict these operations to permitted users.
+The organization GraphQL queries and mutations now use the V1-M2 identity/authorization foundation. Organization creation requires authentication and creates an owner membership atomically. Reads, hierarchy changes, configuration changes, membership changes, and facility-scoped settings reads are authorized server-side before delegation to organization application services.
 
-Do not deploy the V1-M1 boundary as an internet-facing production administration API before V1-M2 protection is complete.
+Structural tenant isolation remains in `OrganizationRepo`; user authorization is an additional boundary and does not replace repository ownership constraints.
 
 ## Migration and Verification
 

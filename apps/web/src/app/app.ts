@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, inject, OnInit, PLATFORM_ID, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { AuthService } from './core/auth/auth.service';
 import { AhAppShellComponent, AhHeaderComponent, AhNavGroup, AhPageHeaderComponent, AhSidebarComponent } from './layout';
 import {
   AhBadgeComponent,
@@ -29,7 +31,10 @@ import {
   styleUrl: './app.scss',
   templateUrl: './app.html',
 })
-export class App {
+export class App implements OnInit {
+  protected readonly auth = inject(AuthService);
+  private readonly platformId = inject(PLATFORM_ID);
+
   protected readonly navGroups: readonly AhNavGroup[] = [
     {
       label: 'Workspace',
@@ -65,4 +70,18 @@ export class App {
 
   protected readonly activeOverviewTab = signal('overview');
   protected readonly activeActivityTab = signal('all');
+
+  ngOnInit(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this.auth.restore();
+    }
+  }
+
+  protected login(email: string, password: string): void {
+    this.auth.login(email, password);
+  }
+
+  protected logout(): void {
+    this.auth.logout();
+  }
 }

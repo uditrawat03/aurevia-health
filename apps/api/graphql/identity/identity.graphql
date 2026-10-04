@@ -1,0 +1,79 @@
+"Organization role used by the initial RBAC policy."
+enum OrganizationRole {
+    OWNER
+    ADMIN
+    CLINICIAN
+    STAFF
+    VIEWER
+}
+
+"Lifecycle state of an organization membership."
+enum MembershipStatus {
+    ACTIVE
+    REVOKED
+}
+
+"An authenticated user's organization membership and facility scope."
+type OrganizationMembership {
+    id: ID!
+    userId: ID!
+    organizationId: ID!
+    role: OrganizationRole!
+    status: MembershipStatus!
+    allFacilities: Boolean!
+    facilityIds: [ID!]!
+}
+
+"The first-party user identity exposed to the authenticated Angular shell."
+type AuthenticatedUser {
+    id: ID!
+    name: String!
+    email: String!
+    memberships: [OrganizationMembership!]!
+}
+
+"Result of invalidating the current first-party session."
+type LogoutResult {
+    loggedOut: Boolean!
+}
+
+input LoginInput {
+    email: String!
+    password: String!
+}
+
+input AssignOrganizationMembershipInput {
+    organizationId: ID!
+    userId: ID!
+    role: OrganizationRole!
+    allFacilities: Boolean!
+    facilityIds: [ID!]!
+}
+
+input RevokeOrganizationMembershipInput {
+    organizationId: ID!
+    userId: ID!
+}
+
+extend type Query {
+    me: AuthenticatedUser!
+        @guard
+        @field(resolver: "App\\GraphQL\\Queries\\CurrentUserQuery")
+}
+
+extend type Mutation {
+    login(input: LoginInput!): AuthenticatedUser!
+        @field(resolver: "App\\GraphQL\\Mutations\\LoginMutation")
+
+    logout: LogoutResult!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\LogoutMutation")
+
+    assignOrganizationMembership(input: AssignOrganizationMembershipInput!): OrganizationMembership!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\AssignOrganizationMembershipMutation")
+
+    revokeOrganizationMembership(input: RevokeOrganizationMembershipInput!): OrganizationMembership!
+        @guard
+        @field(resolver: "App\\GraphQL\\Mutations\\RevokeOrganizationMembershipMutation")
+}
