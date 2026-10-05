@@ -20,7 +20,13 @@ describe('AhTabsComponent', () => {
 
     const tabs = fixture.nativeElement.querySelectorAll('[role="tab"]') as NodeListOf<HTMLButtonElement>;
     expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+    expect(tabs[0].tabIndex).toBe(0);
+    expect(tabs[1].tabIndex).toBe(-1);
 
+    tabs[0].dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }));
+    expect(selected).toBe('activity');
+
+    selected = '';
     tabs[1].click();
     expect(selected).toBe('activity');
   });

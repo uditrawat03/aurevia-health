@@ -73,6 +73,7 @@ import { AhCardComponent, AhTableShellComponent } from '../../shared/ui';
             <input
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="problemDisplay"
+              aria-label="Problem description"
               placeholder="Problem description"
               [disabled]="!canWrite()"
             />
@@ -100,18 +101,21 @@ import { AhCardComponent, AhTableShellComponent } from '../../shared/ui';
             <input
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="allergySubstance"
+              aria-label="Allergy substance"
               placeholder="Substance"
               [disabled]="!canWrite()"
             />
             <input
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="allergyReaction"
+              aria-label="Allergy reaction"
               placeholder="Reaction (optional)"
               [disabled]="!canWrite()"
             />
             <select
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="allergySeverity"
+              aria-label="Allergy severity"
               [disabled]="!canWrite()"
             >
               <option value="UNKNOWN">Unknown severity</option>
@@ -148,6 +152,7 @@ import { AhCardComponent, AhTableShellComponent } from '../../shared/ui';
             <select
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="observationCode"
+              aria-label="Observation type"
               [disabled]="!canWrite()"
               (ngModelChange)="setObservationPreset($event)"
             >
@@ -164,12 +169,14 @@ import { AhCardComponent, AhTableShellComponent } from '../../shared/ui';
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               type="number"
               [(ngModel)]="observationValue"
+              aria-label="Observation value"
               placeholder="Value"
               [disabled]="!canWrite()"
             />
             <input
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="observationUnit"
+              aria-label="Observation unit"
               placeholder="Unit"
               [disabled]="!canWrite()"
             />
@@ -206,12 +213,14 @@ import { AhCardComponent, AhTableShellComponent } from '../../shared/ui';
             <input
               class="rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="noteTitle"
+              aria-label="Clinical note title"
               placeholder="Note title"
               [disabled]="!canWrite()"
             />
             <textarea
               class="min-h-32 rounded-md border border-slate-300 px-3 py-2 text-sm"
               [(ngModel)]="noteBody"
+              aria-label="Clinical note body"
               placeholder="Clinical note"
               [disabled]="!canWrite()"
             ></textarea>
@@ -283,11 +292,13 @@ import { AhCardComponent, AhTableShellComponent } from '../../shared/ui';
               <textarea
                 class="min-h-24 rounded-md border border-slate-300 px-3 py-2 text-sm"
                 [(ngModel)]="amendmentBody"
+                aria-label="Signed-note amendment content"
                 placeholder="Addendum or correction content"
               ></textarea>
               <input
                 class="rounded-md border border-slate-300 px-3 py-2 text-sm"
                 [(ngModel)]="amendmentReason"
+                aria-label="Signed-note correction reason"
                 placeholder="Correction reason (required for correction)"
               />
               <div class="flex flex-wrap gap-2">

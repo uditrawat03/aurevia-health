@@ -518,6 +518,18 @@
     box-shadow: 0 0 0 3px rgb(56 103 232 / 0.12);
   }
 
+  .ah-input:focus-visible,
+  .ah-select:focus-visible,
+  .ah-textarea:focus-visible,
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--ah-color-brand-cobalt);
+    outline-offset: 2px;
+  }
+
   .ah-badge {
     display: inline-flex;
     min-height: 1.35rem;

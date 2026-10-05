@@ -331,6 +331,22 @@ M9 exposes non-patient GraphQL contract queries for terminology-system discovery
 
 See [docs/TERMINOLOGY_INTEROPERABILITY.md](docs/TERMINOLOGY_INTEROPERABILITY.md) for the terminology model, mapping rules, FHIR boundary, correlation behavior, GraphQL preview contract, verification steps, and deferred production-integration work.
 
+## Version 1 Release Candidate Hardening
+
+V1-M10 adds release-candidate verification around the completed Version 1 foundation rather than introducing another healthcare domain. A full synthetic acceptance test now crosses organization/facility setup, facility-scoped staff roles, patient registration, consent, scheduling, encounter lifecycle, clinical documentation, signing, timeline review, and restricted audit review through the GraphQL application boundary.
+
+The RC gate also adds Composer and production npm dependency audits to CI, repeatable Docker scripts for the complete local quality gate, a clean-database migration rehearsal, and a PostgreSQL backup/restore rehearsal that restores only into a temporary local database.
+
+Run the Windows acceptance gates with:
+
+```powershell
+pwsh ./scripts/release-candidate.ps1
+pwsh ./scripts/migration-rehearsal.ps1
+pwsh ./scripts/backup-restore-test.ps1
+```
+
+See [docs/RELEASE_HARDENING.md](docs/RELEASE_HARDENING.md) for the security, clinical-safety, migration, restore, performance, accessibility, and production-configuration gates. Record candidate-specific evidence in [docs/V1_RELEASE_CANDIDATE_EVIDENCE.md](docs/V1_RELEASE_CANDIDATE_EVIDENCE.md) before creating an RC tag.
+
 ## Development Principles
 
 ### 1. Core before country specifics
@@ -408,6 +424,8 @@ Start with:
 - [docs/AUDIT_FOUNDATION.md](docs/AUDIT_FOUNDATION.md) — structured audit evidence, denial durability, and restricted audit viewing.
 - [docs/PATIENT_IDENTITY_MPI.md](docs/PATIENT_IDENTITY_MPI.md) — patient identity, MPI duplicate review, secure search, patient audit context, and local demo seeding.
 - [docs/TERMINOLOGY_INTEROPERABILITY.md](docs/TERMINOLOGY_INTEROPERABILITY.md) — versioned terminology concepts, mapping contracts, FHIR boundary, and correlation behavior.
+- [docs/RELEASE_HARDENING.md](docs/RELEASE_HARDENING.md) — V1 release-candidate security, migration, restore, performance, accessibility, and production-readiness gates.
+- [docs/V1_RELEASE_CANDIDATE_EVIDENCE.md](docs/V1_RELEASE_CANDIDATE_EVIDENCE.md) — evidence template for the exact release-candidate commit.
 - [SECURITY.md](SECURITY.md) — repository security expectations and release blockers.
 
 ## Initial Definition of Ready
