@@ -17,7 +17,7 @@ Aurevia Health is the official name used for product, architecture, roadmap, mil
 
 ## Version 1 Status
 
-The Version 1 implementation scope, including M10 automated hardening, is implemented. Documentation consolidation commit `0380cbd16f72421c692ca7db1519016dd8553504` passed GitHub Actions **Quality** run #19, and the manual accessibility smoke check passed on 2026-10-05. The release tag remains pending only until the final evidence-closeout commit itself passes CI on its exact SHA.
+Version 1 RC1 is tagged as [`v1.0.0-rc.1`](docs/releases/v1.0.0-rc.1.md) at commit `5d7ef2a3903dcc4980c45630f55869cab34f70cc`. The tag-candidate commit passed GitHub Actions **Quality** run #20, and the manual accessibility smoke check passed on 2026-10-05. Version 1 remains an engineering release candidate, not a regulatory-compliance or production-certification claim.
 
 | Area | Current Version 1 capability |
 |---|---|
@@ -33,6 +33,14 @@ The Version 1 implementation scope, including M10 automated hardening, is implem
 | Release hardening | Full synthetic V1 workflow, dependency audits, migration/restore rehearsals, production configuration baseline, performance evidence and accessibility source/test hardening |
 
 See [docs/README.md](docs/README.md) for the maintained documentation map and ownership rules.
+
+## Version 2 Planning
+
+Version 2 is planned as a **care-delivery expansion** built on the V1 trust foundation. The sequence adds care teams/tasks, clinical orders/results, inpatient admission/transfer/discharge and bed flow, nursing, emergency, medication-safety and diagnostic workflow foundations before a new hardening/release-candidate gate.
+
+The Version 2 plan deliberately does not pull the entire long-term roadmap into one release. Financial workflows, patient portal, country-specific claims, production national integrations, broad analytics and AI remain outside V2 unless separately promoted through roadmap governance.
+
+See [version_2_milestones.md](version_2_milestones.md) for the planned sequence and [ROADMAP.md](ROADMAP.md) for the longer-term capability horizons.
 
 ## Technology Baseline
 
@@ -446,7 +454,9 @@ Start with [docs/README.md](docs/README.md), the maintained documentation index.
 - [ARCHITECTURE.md](ARCHITECTURE.md) — system boundaries, modules, security, data and integration architecture.
 - [ROADMAP.md](ROADMAP.md) — product progression beyond version 1.
 - [version_1_milestones.md](version_1_milestones.md) — implementation sequence for the first production-capable foundation.
+- [version_2_milestones.md](version_2_milestones.md) — planned care-delivery expansion milestones for Version 2.
 - [MILESTONES_TESTING.md](MILESTONES_TESTING.md) — milestone gates, testing rules, and release evidence.
+- [docs/releases/v1.0.0-rc.1.md](docs/releases/v1.0.0-rc.1.md) — release notes for the tagged Version 1 RC1 baseline.
 - [docs/ADR_TEMPLATE.md](docs/ADR_TEMPLATE.md) — architecture decision record template.
 - [docs/TECH_BASELINE.md](docs/TECH_BASELINE.md) — framework/runtime baseline and upgrade policy.
 - [docs/DOCKER_DEVELOPMENT.md](docs/DOCKER_DEVELOPMENT.md) — local Docker architecture and commands.

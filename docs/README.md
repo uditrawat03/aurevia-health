@@ -1,6 +1,6 @@
 # Aurevia Health Documentation
 
-This directory is the entry point for Aurevia Health technical and Version 1 domain documentation.
+This directory is the entry point for Aurevia Health technical, release and versioned domain documentation.
 
 Documentation must distinguish **implemented behavior**, **release evidence**, and **future roadmap**. A roadmap item or architectural extension point is not an implemented product capability until code, tests and the owning domain document say so.
 
@@ -12,6 +12,7 @@ Documentation must distinguish **implemented behavior**, **release evidence**, a
 | [`../ARCHITECTURE.md`](../ARCHITECTURE.md) | System boundaries, implemented V1 architecture and future extension points |
 | [`../ROADMAP.md`](../ROADMAP.md) | Capability-oriented progression beyond the delivered V1 foundation |
 | [`../version_1_milestones.md`](../version_1_milestones.md) | V1 outcomes, engineering checkpoints and current RC status |
+| [`../version_2_milestones.md`](../version_2_milestones.md) | Dependency-ordered Version 2 care-delivery expansion plan |
 | [`../MILESTONES_TESTING.md`](../MILESTONES_TESTING.md) | Test layers, safety/security gates and release evidence expectations |
 | [`../CODING_GUIDELINES.md`](../CODING_GUIDELINES.md) | Mandatory code, GraphQL, healthcare-safety and documentation rules |
 | [`../SECURITY.md`](../SECURITY.md) | Repository security policy and release blockers |
@@ -47,6 +48,12 @@ Documentation must distinguish **implemented behavior**, **release evidence**, a
 |---|---|
 | [`RELEASE_HARDENING.md`](RELEASE_HARDENING.md) | Security, migration, restore, performance, accessibility and documentation gates |
 | [`V1_RELEASE_CANDIDATE_EVIDENCE.md`](V1_RELEASE_CANDIDATE_EVIDENCE.md) | Candidate-specific verification evidence and remaining blockers |
+
+## Release Notes
+
+| Release | Notes |
+|---|---|
+| `v1.0.0-rc.1` | [`releases/v1.0.0-rc.1.md`](releases/v1.0.0-rc.1.md) |
 
 The evidence document is authoritative for whether an RC may be tagged. A green earlier commit does not automatically satisfy CI for a later documentation/code commit.
 

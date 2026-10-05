@@ -4,7 +4,7 @@
 
 This roadmap describes the intended product progression for Aurevia Health. It is capability-oriented rather than date-driven and distinguishes delivered Version 1 foundations from future hospital-platform scope.
 
-Detailed Version 1 gates are defined in [version_1_milestones.md](version_1_milestones.md).
+Detailed release sequencing is defined in [version_1_milestones.md](version_1_milestones.md) and [version_2_milestones.md](version_2_milestones.md).
 
 ## Product Strategy
 
@@ -36,6 +36,10 @@ The Version 1 release-candidate scope delivers the trust-first outpatient/clinic
 | Horizons 4–8, 10–14 | **Future roadmap** |
 
 The next roadmap work should extend these boundaries without weakening the Version 1 authorization, privacy, audit, provenance, signed-record and tenant-isolation invariants.
+
+## Version 2 Delivery Focus
+
+Version 2 is scoped as a care-delivery expansion across selected parts of Horizons 2–5: care teams/tasks, orders/results, inpatient ADT and bed flow, nursing, emergency, medication safety and diagnostic workflow foundations. It is not intended to complete the financial, patient-portal, country-integration, analytics or AI horizons. See [version_2_milestones.md](version_2_milestones.md) for the dependency-ordered plan.
 
 # Horizon 0 — Engineering Foundation
 
