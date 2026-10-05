@@ -1,6 +1,6 @@
 # V1 Release Candidate Evidence
 
-This file records the verification evidence for the Aurevia Health Version 1 release candidate. Replace `PENDING` only with evidence from the exact candidate commit. Use synthetic healthcare data only.
+This file records the verification evidence for the Aurevia Health Version 1 release candidate. Replace `PENDING` only with evidence from the exact candidate commit or an explicitly identified predecessor whose result remains applicable. Use synthetic healthcare data only.
 
 ## Candidate identity
 
@@ -8,7 +8,8 @@ This file records the verification evidence for the Aurevia Health Version 1 rel
 |---|---|
 | Verified M10 implementation commit | `d3f59e18cf2308501cfc1c7b687cf2cb94a534df` — full local release gates rerun immediately before commit |
 | Verified pre-documentation closeout commit | `9c425e022147dd576bcbec1dee728f669ca1f763` — GitHub Actions Quality run #18 completed successfully |
-| Final tag candidate commit | **PENDING** — this documentation consolidation changes the SHA and must be committed/pushed and pass CI before tagging |
+| Verified documentation consolidation commit | `0380cbd16f72421c692ca7db1519016dd8553504` — 25-file documentation review committed/pushed; GitHub Actions Quality run #19 completed successfully |
+| Final tag candidate commit | **PENDING** — the evidence-closeout commit produced from this state must pass CI on its exact SHA before tagging |
 | Candidate tag | `v1.0.0-rc.1` (only after every release blocker is cleared) |
 | Verification date | 2026-10-05 |
 | Verifier | Local developer verification |
@@ -28,7 +29,8 @@ This file records the verification evidence for the Aurevia Health Version 1 rel
 | `testing.ERROR` log check | **PASS** — no entries |
 | `git diff --check` | **PASS** |
 | GitHub Actions on pre-documentation closeout commit | **PASS** — Quality run #18 on `9c425e022147dd576bcbec1dee728f669ca1f763` |
-| GitHub Actions on final tag candidate commit | PENDING — required after documentation consolidation |
+| GitHub Actions on documentation consolidation commit | **PASS** — Quality run #19 on `0380cbd16f72421c692ca7db1519016dd8553504` |
+| GitHub Actions on final tag candidate commit | **PENDING** — required after this evidence-closeout change is committed |
 
 Local automated-gate command:
 
@@ -36,7 +38,7 @@ Local automated-gate command:
 pwsh ./scripts/release-candidate.ps1
 ```
 
-The local automated gates were rerun on the exact implementation content committed as `d3f59e18cf2308501cfc1c7b687cf2cb94a534df`. The subsequent CI/evidence closeout commit `9c425e022147dd576bcbec1dee728f669ca1f763` passed GitHub Actions. Because documentation consolidation creates another commit, CI must be green again on that exact final tag candidate before `v1.0.0-rc.1` is created.
+The local automated gates were rerun on the exact implementation content committed as `d3f59e18cf2308501cfc1c7b687cf2cb94a534df`. The CI/evidence closeout commit `9c425e022147dd576bcbec1dee728f669ca1f763` passed Quality run #18, and documentation consolidation commit `0380cbd16f72421c692ca7db1519016dd8553504` passed Quality run #19. After this evidence-only closeout change is committed, CI must pass once more on that exact commit before `v1.0.0-rc.1` is created.
 
 ## Security and tenant isolation
 
@@ -123,19 +125,19 @@ The unmeasured clinical-shell timing is a documented staging/browser follow-up r
 
 Automated/source-level status: **PASS** — reusable tabs expose `tablist`/`tab`, roving tabindex and Arrow/Home/End keyboard navigation; primary clinical editor controls have accessible names; shared styles provide visible `:focus-visible` treatment; Angular tests remain 9/9 after the hardening.
 
-Manual verification status: **PENDING**
+Manual verification status: **PASS — developer completed the documented keyboard/visual accessibility smoke check on 2026-10-05.**
 
-- [ ] keyboard-only navigation through primary authenticated workflow
-- [ ] visible focus on interactive controls
-- [ ] semantic structure/headings reviewed
-- [ ] form labels and validation associations reviewed
-- [ ] patient-context banner readability reviewed
-- [ ] status/error communication does not rely only on color
-- [ ] contrast reviewed on primary light theme surfaces
-- [ ] focus behavior after errors/dialog interactions reviewed where present
-- [ ] accessible names for primary links/buttons reviewed
+- [x] keyboard-only navigation through primary authenticated workflow
+- [x] visible focus on interactive controls
+- [x] semantic structure/headings reviewed
+- [x] form labels and validation associations reviewed
+- [x] patient-context banner readability reviewed
+- [x] status/error communication does not rely only on color
+- [x] contrast reviewed on primary light theme surfaces
+- [x] focus behavior after errors/dialog interactions reviewed where present
+- [x] accessible names for primary links/buttons reviewed
 
-Known accessibility limitations: PENDING
+Known accessibility limitations: **No release-blocking issue was identified in this manual smoke check.** This engineering check is not a formal WCAG certification or a substitute for broader assistive-technology and production accessibility review.
 
 ## Audit coverage review
 
@@ -162,15 +164,15 @@ These are intentional boundaries, not silent omissions:
 
 ## Release decision
 
-- [ ] all automated gates pass on the exact candidate commit
+- [x] automated implementation/documentation gates pass through `0380cbd16f72421c692ca7db1519016dd8553504`
 - [x] migration rehearsal passes
 - [x] backup/restore rehearsal passes
 - [x] security review has no unresolved source-level release blocker
 - [x] clinical-safety review has no unresolved release blocker
 - [x] performance baseline recorded and exceptions accepted
-- [ ] accessibility baseline recorded and limitations accepted
+- [x] accessibility baseline recorded and limitations accepted
 - [x] documentation reviewed and consolidated across README, architecture, roadmap, application and domain documentation
-- [ ] working tree clean and final documentation commit pushed
-- [ ] CI green on final tag candidate commit
+- [x] documentation consolidation commit is clean, pushed and CI-green
+- [ ] CI green on the evidence-closeout commit that will receive the RC tag
 
-Decision: **PENDING — DO NOT TAG**
+Decision: **READY FOR FINAL EVIDENCE COMMIT — DO NOT TAG until GitHub Actions passes on that exact commit.**

@@ -17,7 +17,7 @@ Aurevia Health is the official name used for product, architecture, roadmap, mil
 
 ## Version 1 Status
 
-The Version 1 implementation scope, including M10 automated hardening, is implemented; release-candidate acceptance remains open until the remaining manual and exact-commit release gates are complete. The latest pre-documentation closeout commit (`9c425e0`) passed the GitHub Actions **Quality** workflow; the release tag remains intentionally pending until the final documentation commit passes CI and the manual accessibility smoke check is recorded.
+The Version 1 implementation scope, including M10 automated hardening, is implemented. Documentation consolidation commit `0380cbd16f72421c692ca7db1519016dd8553504` passed GitHub Actions **Quality** run #19, and the manual accessibility smoke check passed on 2026-10-05. The release tag remains pending only until the final evidence-closeout commit itself passes CI on its exact SHA.
 
 | Area | Current Version 1 capability |
 |---|---|

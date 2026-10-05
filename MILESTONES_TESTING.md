@@ -20,9 +20,10 @@ The Version 1 hardening work currently has the following verified engineering ev
 - clean-database migration rehearsal: **13/13 migrations**;
 - local backup/restore rehearsal: **PASS**;
 - local application-layer performance baseline: highest measured P95 **33.88 ms** across the five recorded GraphQL reads;
-- GitHub Actions Quality workflow: **PASS** on closeout commit `9c425e0`.
+- GitHub Actions Quality workflow: **PASS** on documentation consolidation commit `0380cbd16f72421c692ca7db1519016dd8553504` (run #19);
+- manual accessibility smoke check: **PASS** on 2026-10-05.
 
-The final tag candidate must repeat CI after any documentation or code commit that changes the SHA. Manual accessibility verification remains a separate release-evidence item; automated/source-level accessibility hardening does not replace it.
+The evidence-closeout commit created after these records change must pass CI on its exact SHA before the `v1.0.0-rc.1` tag is created. Automated/source-level accessibility hardening and the manual smoke check are engineering evidence, not a formal accessibility certification.
 
 ## 1. Testing Layers
 

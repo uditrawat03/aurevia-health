@@ -259,7 +259,7 @@ Acceptance:
 
 # V1-M10 — Hardening and Release Candidate
 
-**Outcome:** engineering hardening is implemented; final RC evidence remains open until documentation consolidation and the manual accessibility smoke check are complete on the tag candidate.
+**Outcome:** engineering hardening, documentation consolidation, and the manual accessibility smoke check are complete. Final RC evidence closes when the evidence-closeout commit passes CI on its exact SHA.
 
 Scope:
 
