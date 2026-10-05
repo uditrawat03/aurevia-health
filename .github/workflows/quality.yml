@@ -13,7 +13,6 @@ jobs:
   backend:
     name: Laravel
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('apps/api/composer.json') != '' }}
 
     services:
       postgres:
@@ -87,7 +86,6 @@ jobs:
   frontend:
     name: Angular
     runs-on: ubuntu-latest
-    if: ${{ hashFiles('apps/web/package.json') != '' }}
 
     defaults:
       run:

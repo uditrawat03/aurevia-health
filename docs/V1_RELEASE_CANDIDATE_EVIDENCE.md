@@ -6,7 +6,7 @@ This file records the verification evidence for the Aurevia Health Version 1 rel
 
 | Item | Evidence |
 |---|---|
-| Candidate commit | PENDING — M10 verification below was run on the uncommitted working tree based on `e28da51`; rerun/CI must confirm the final candidate commit |
+| Verified M10 implementation commit | `d3f59e18cf2308501cfc1c7b687cf2cb94a534df` — the full local release gates were rerun on the exact content tree immediately before this commit; the following closeout commit changes release evidence/CI packaging only and still must pass GitHub Actions before tagging |
 | Candidate tag | `v1.0.0-rc.1` (only after every release blocker is cleared) |
 | Verification date | 2026-10-05 |
 | Verifier | Local developer verification |
@@ -33,7 +33,7 @@ Local automated-gate command:
 pwsh ./scripts/release-candidate.ps1
 ```
 
-The local automated results above were captured before the final candidate commit. They are release evidence for M10 development, but the final candidate commit must still be pushed and pass CI before tagging.
+The local automated gates were rerun on the exact content tree committed as `d3f59e18cf2308501cfc1c7b687cf2cb94a534df`. GitHub Actions must still pass on the evidence/CI closeout commit that will be tagged as the release candidate.
 
 ## Security and tenant isolation
 
@@ -105,14 +105,14 @@ Result: **PASS — local application-layer baseline recorded on 2026-10-05.**
 
 | Operation | P50 | P95 | Target / note |
 |---|---:|---:|---|
-| representative authenticated GraphQL API | 9.76 ms | 13.13 ms | below initial P95 target < 300 ms |
-| patient search | 11.90 ms | 14.21 ms | below initial P95 target < 1 s |
-| clinical-record read | 17.64 ms | 19.54 ms | highest measured P95 in this run |
-| scheduling-window read | 10.87 ms | 11.81 ms | local baseline |
-| audit-view read | 10.92 ms | 11.87 ms | local baseline |
+| representative authenticated GraphQL API | 17.95 ms | 21.55 ms | below initial P95 target < 300 ms |
+| patient search | 19.93 ms | 23.66 ms | below initial P95 target < 1 s |
+| clinical-record read | 29.26 ms | 33.88 ms | highest measured P95 in the final pre-commit run |
+| scheduling-window read | 24.08 ms | 26.80 ms | local baseline |
+| audit-view read | 17.16 ms | 18.53 ms | local baseline |
 | main clinical shell usable time | NOT MEASURED | NOT MEASURED | browser/network/TLS/render timing requires staging/browser measurement; the API benchmark cannot measure this honestly |
 
-The benchmark completed with `OK (1 test, 299 assertions)`. All five measured GraphQL operations stayed below 20 ms P95 in the local Docker environment. These figures are not production SLAs and should not be extrapolated to browser-perceived latency.
+The final pre-commit benchmark completed with `OK (1 test, 299 assertions)`. All five measured GraphQL operations stayed below 34 ms P95 in the local Docker environment and remained comfortably inside the initial engineering targets. These figures are not production SLAs and should not be extrapolated to browser-perceived latency.
 
 The unmeasured clinical-shell timing is a documented staging/browser follow-up rather than a failed API measurement. Performance exceptions require an explicit reason and follow-up rather than deleting the measurement.
 
@@ -164,7 +164,7 @@ These are intentional boundaries, not silent omissions:
 - [x] backup/restore rehearsal passes
 - [x] security review has no unresolved source-level release blocker
 - [x] clinical-safety review has no unresolved release blocker
-- [ ] performance baseline recorded and exceptions accepted
+- [x] performance baseline recorded and exceptions accepted
 - [ ] accessibility baseline recorded and limitations accepted
 - [ ] documentation reviewed
 - [ ] working tree clean and candidate commit pushed
