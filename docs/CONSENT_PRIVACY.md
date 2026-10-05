@@ -2,7 +2,7 @@
 
 ## Purpose
 
-V1-M5 establishes an explicit patient privacy decision boundary on top of Aurevia Health's existing authentication, organization membership, facility scope, patient identity, and audit foundations.
+The Version 1 consent/privacy boundary adds explicit patient privacy decisions on top of Aurevia Health's authentication, organization membership, facility scope, patient identity, and audit foundations.
 
 The key rule is:
 
@@ -195,4 +195,4 @@ docker exec aurevia-health-web npm run build
 git diff --check
 ```
 
-M5 is not complete until these gates are green and the browser flow confirms grant, revoke, denied record access, and break-glass behavior.
+Regression coverage must continue to verify consent grant/revocation, denied record access, privacy-policy enforcement, and time-bounded break-glass behavior. The browser flow is a useful local demonstration, while the Laravel policy boundary remains authoritative.

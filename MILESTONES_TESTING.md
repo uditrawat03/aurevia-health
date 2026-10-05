@@ -6,6 +6,24 @@ This document defines the minimum verification evidence required before a milest
 
 Healthcare software should not use "it works on my machine" as a completion criterion. Each milestone should establish evidence for functionality, authorization, privacy, failure behavior, and regression safety appropriate to its scope.
 
+## Current Version 1 Release-Candidate Evidence
+
+The Version 1 hardening work currently has the following verified engineering evidence:
+
+- Lighthouse schema validation: **PASS**;
+- backend suite: **84 tests / 530 assertions**;
+- complete synthetic V1 GraphQL workflow: **PASS**;
+- Composer audit: **no security advisories**;
+- Angular unit suite: **6 files / 9 tests**;
+- Angular production build: **PASS**;
+- production npm audit: **0 vulnerabilities**;
+- clean-database migration rehearsal: **13/13 migrations**;
+- local backup/restore rehearsal: **PASS**;
+- local application-layer performance baseline: highest measured P95 **33.88 ms** across the five recorded GraphQL reads;
+- GitHub Actions Quality workflow: **PASS** on closeout commit `9c425e0`.
+
+The final tag candidate must repeat CI after any documentation or code commit that changes the SHA. Manual accessibility verification remains a separate release-evidence item; automated/source-level accessibility hardening does not replace it.
+
 ## 1. Testing Layers
 
 | Layer | Purpose |
@@ -135,9 +153,11 @@ accepted message != successfully delivered message
 
 Persist enough state to reconcile delivery.
 
-## 11. API Contract Gate
+## 11. GraphQL and Protocol Contract Gate
 
-Versioned APIs require request validation, stable errors, authorization, pagination behavior where relevant, idempotency semantics for retryable writes, and a breaking-change policy.
+The first-party application contract is GraphQL at `/graphql`. It requires typed inputs/payloads, request validation, stable errors with correlation IDs, server-side authorization, pagination behavior where relevant, idempotency semantics for retryable writes, and additive schema evolution/deprecation for breaking changes.
+
+Protocol-specific exceptions such as health/readiness, Sanctum bootstrap, webhooks and future FHIR/HL7/DICOM/partner adapters must remain explicit and must not become parallel first-party CRUD APIs.
 
 ## 12. Frontend Safety Gate
 

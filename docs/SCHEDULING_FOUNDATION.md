@@ -66,7 +66,7 @@ WAITING → OFFERED → BOOKED
    └──────────────→ CANCELLED
 ```
 
-This milestone implements `WAITING` creation and explicit cancellation; offer-to-book orchestration is intentionally deferred. Waitlist creation is idempotent, is privacy-protected, and is audited. Cancelling a waiting entry preserves the row and records its cancellation reason.
+Version 1 implements `WAITING` creation and explicit cancellation; offer-to-book orchestration remains deferred. Waitlist creation is idempotent, privacy-protected, and audited. Cancelling a waiting entry preserves the row and records its cancellation reason.
 
 ## Timezone behavior
 
@@ -111,6 +111,6 @@ The Angular `/scheduling` workspace supports patient search, booking, appointmen
 
 For local testing, Asha Mehta has active treatment consent and can complete scheduling workflows. Rahil Khan has a revoked consent scenario and should be denied until privacy state changes or authorized break-glass access is active.
 
-## Release gates
+## Regression Coverage
 
 M6 is complete only when schema validation, backend tests, dependency audit, frontend tests/build, and `git diff --check` are green. Tests cover booking idempotency, conflict behavior, privacy enforcement, facility authorization, reschedule conflict re-checking, cancellation slot release/history, and waitlist idempotency/cancellation.

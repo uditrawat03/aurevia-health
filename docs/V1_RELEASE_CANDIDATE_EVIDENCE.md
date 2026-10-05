@@ -6,7 +6,9 @@ This file records the verification evidence for the Aurevia Health Version 1 rel
 
 | Item | Evidence |
 |---|---|
-| Verified M10 implementation commit | `d3f59e18cf2308501cfc1c7b687cf2cb94a534df` — the full local release gates were rerun on the exact content tree immediately before this commit; the following closeout commit changes release evidence/CI packaging only and still must pass GitHub Actions before tagging |
+| Verified M10 implementation commit | `d3f59e18cf2308501cfc1c7b687cf2cb94a534df` — full local release gates rerun immediately before commit |
+| Verified pre-documentation closeout commit | `9c425e022147dd576bcbec1dee728f669ca1f763` — GitHub Actions Quality run #18 completed successfully |
+| Final tag candidate commit | **PENDING** — this documentation consolidation changes the SHA and must be committed/pushed and pass CI before tagging |
 | Candidate tag | `v1.0.0-rc.1` (only after every release blocker is cleared) |
 | Verification date | 2026-10-05 |
 | Verifier | Local developer verification |
@@ -25,7 +27,8 @@ This file records the verification evidence for the Aurevia Health Version 1 rel
 | Production npm dependency audit | **PASS** — 0 vulnerabilities |
 | `testing.ERROR` log check | **PASS** — no entries |
 | `git diff --check` | **PASS** |
-| GitHub Actions on candidate commit | PENDING |
+| GitHub Actions on pre-documentation closeout commit | **PASS** — Quality run #18 on `9c425e022147dd576bcbec1dee728f669ca1f763` |
+| GitHub Actions on final tag candidate commit | PENDING — required after documentation consolidation |
 
 Local automated-gate command:
 
@@ -33,7 +36,7 @@ Local automated-gate command:
 pwsh ./scripts/release-candidate.ps1
 ```
 
-The local automated gates were rerun on the exact content tree committed as `d3f59e18cf2308501cfc1c7b687cf2cb94a534df`. GitHub Actions must still pass on the evidence/CI closeout commit that will be tagged as the release candidate.
+The local automated gates were rerun on the exact implementation content committed as `d3f59e18cf2308501cfc1c7b687cf2cb94a534df`. The subsequent CI/evidence closeout commit `9c425e022147dd576bcbec1dee728f669ca1f763` passed GitHub Actions. Because documentation consolidation creates another commit, CI must be green again on that exact final tag candidate before `v1.0.0-rc.1` is created.
 
 ## Security and tenant isolation
 
@@ -166,8 +169,8 @@ These are intentional boundaries, not silent omissions:
 - [x] clinical-safety review has no unresolved release blocker
 - [x] performance baseline recorded and exceptions accepted
 - [ ] accessibility baseline recorded and limitations accepted
-- [ ] documentation reviewed
-- [ ] working tree clean and candidate commit pushed
-- [ ] CI green on candidate commit
+- [x] documentation reviewed and consolidated across README, architecture, roadmap, application and domain documentation
+- [ ] working tree clean and final documentation commit pushed
+- [ ] CI green on final tag candidate commit
 
 Decision: **PENDING — DO NOT TAG**

@@ -151,6 +151,19 @@ After npm dependency changes:
 docker compose -f .\infrastructure\docker\compose.yml --profile app exec web npm ci
 ```
 
+## Release-Candidate Local Gates
+
+The development stack also supports repeatable synthetic release rehearsals:
+
+```powershell
+pwsh ./scripts/release-candidate.ps1
+pwsh ./scripts/migration-rehearsal.ps1
+pwsh ./scripts/backup-restore-test.ps1
+pwsh ./scripts/performance-baseline.ps1
+```
+
+The migration, restore and performance scripts use isolated temporary PostgreSQL databases and must not be pointed at production data.
+
 ## Security Boundary
 
-The local database password is deliberately marked as development-only. Production secrets must not be placed in Dockerfiles, Compose files, committed `.env` files, Angular source, or image layers. Production images require a separate hardening and deployment milestone.
+The local database password is deliberately marked as development-only. Production secrets must not be placed in Dockerfiles, Compose files, committed `.env` files, Angular source, or image layers. Production deployment starts from `apps/api/.env.production.example` and still requires deployment-specific secret management, TLS/proxy, storage and operational hardening.

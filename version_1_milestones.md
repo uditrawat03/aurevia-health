@@ -2,9 +2,20 @@
 
 ## Version 1 Goal
 
-Version 1 establishes a production-capable **global healthcare platform foundation** and a safe first slice of patient, scheduling, encounter, privacy, and clinical-record functionality.
+Version 1 establishes a production-oriented **global healthcare platform foundation** and a safe first slice of patient, scheduling, encounter, privacy, clinical-record, terminology and interoperability-contract functionality.
 
-It is intentionally not a complete hospital information system.
+It is intentionally not a complete hospital information system and the release-candidate label does not imply regulatory certification or readiness for real patient data.
+
+## Current Engineering Status
+
+| Milestone | Status |
+|---|---|
+| V1-M0 through V1-M9 | **Implemented and committed** |
+| V1-M10 implementation hardening | **PASS** — local automated gate, clean migration rehearsal, backup/restore rehearsal, security review, performance baseline and source/test accessibility hardening completed |
+| GitHub Actions | **PASS** on closeout commit `9c425e0` |
+| Documentation consolidation | **In progress** — this documentation update must itself be committed and pass CI |
+| Manual accessibility smoke check | **Pending** |
+| `v1.0.0-rc.1` tag | **Not created** until the remaining release evidence is complete |
 
 ## Version 1 User Outcome
 
@@ -248,6 +259,8 @@ Acceptance:
 
 # V1-M10 — Hardening and Release Candidate
 
+**Outcome:** engineering hardening is implemented; final RC evidence remains open until documentation consolidation and the manual accessibility smoke check are complete on the tag candidate.
+
 Scope:
 
 - security review;
@@ -320,3 +333,5 @@ v1.0.0
 ```
 
 Milestone identifiers are engineering checkpoints, not public semantic versions.
+
+The current intended public candidate is `v1.0.0-rc.1`. Do not create the tag until `docs/V1_RELEASE_CANDIDATE_EVIDENCE.md` records the final candidate commit, green CI on that exact commit, documentation review, and the remaining manual accessibility result.

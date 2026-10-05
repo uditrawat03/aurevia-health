@@ -1,59 +1,54 @@
-# Web
+# Aurevia Health Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.1.
+`apps/web` is the Angular 22 SSR frontend for Aurevia Health. It is a stateful first-party client of the Laravel GraphQL boundary and is not an independent security boundary.
 
-## Development server
+## Frontend Model
 
-To start a local development server, run:
+- standalone Angular architecture;
+- strict TypeScript and zoneless change detection;
+- server-side rendering enabled;
+- Vitest unit tests;
+- Tailwind-based Aurevia design foundation;
+- centralized GraphQL transport;
+- Sanctum CSRF/session bootstrap for first-party authentication;
+- persistent patient context on clinical workflows;
+- keyboard/focus/accessibility behavior treated as release criteria.
 
-```bash
-ng serve
+Feature components must not call ordinary Laravel REST CRUD routes. Protected decisions remain authoritative on the backend even when the UI disables or hides an action.
+
+## Local Development
+
+From the repository root, the preferred path is:
+
+```powershell
+scripts\docker.cmd up
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Open `http://localhost:4200`.
 
-## Code scaffolding
+For a host-run frontend:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
+```powershell
+cd apps/web
+npm ci
+npm start
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The development server proxies `/graphql` and `/sanctum` to Laravel.
 
-```bash
-ng generate --help
+## Verification
+
+```powershell
+cd apps/web
+npm test -- --watch=false
+npm run build
+npm audit --omit=dev --audit-level=high
 ```
 
-## Building
+The current Version 1 unit baseline is 6 test files / 9 tests. Manual keyboard/visual accessibility verification remains part of RC evidence.
 
-To build the project run:
+## Current Workspaces
 
-```bash
-ng build
-```
+Functional Version 1 routes include overview, patient search/registration/detail, privacy, audit, scheduling, encounters and patient clinical record. Work queues, administration and the interoperability screen remain UI placeholders even though M9 backend interoperability contract queries are available.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+See [`../../docs/FRONTEND_WORKSPACE_NAVIGATION.md`](../../docs/FRONTEND_WORKSPACE_NAVIGATION.md) for the route-level status and [`../../docs/UI_FOUNDATION.md`](../../docs/UI_FOUNDATION.md) for design/accessibility conventions.

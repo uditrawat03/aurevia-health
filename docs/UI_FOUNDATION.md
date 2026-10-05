@@ -101,7 +101,7 @@ Buttons include hover, active, disabled and focus-visible states.
 - `ah-tab`
 - `ah-tabs-pills`
 
-Use `aria-selected="true"` for active tabs. `is-active` is supported for static/demo markup.
+Use `aria-selected="true"` for active tabs. The reusable Angular tabs component uses roving `tabindex` and supports `ArrowLeft`, `ArrowRight`, `Home`, and `End` keyboard navigation. `is-active` remains supported for static/demo markup.
 
 ### Forms
 
@@ -135,8 +135,9 @@ Status badge variants:
 3. Do not use decorative animation on high-risk clinical actions.
 4. Keep hover motion subtle and short.
 5. Use destructive styling only for genuinely destructive actions.
-6. Patient identity, allergies, critical alerts and signed-record state will receive dedicated components rather than generic badges once those workflows are implemented.
+6. Patient identity and clinical record state must use explicit text/context rather than generic color-only badges; the patient-context banner is the current reusable safety surface.
 7. Dense layouts must remain readable at browser zoom and common laptop resolutions.
+8. Source-level accessibility support does not replace the manual keyboard/visual release-candidate check.
 
 ## Setup
 

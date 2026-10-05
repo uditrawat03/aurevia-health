@@ -168,6 +168,18 @@ Perform a manual WCAG 2.1 AA-oriented pass on the authenticated shell, patient s
 
 Automated component tests remain useful but do not replace keyboard/screen-reader review for clinical workflows.
 
+## Documentation coherence gate
+
+Before tagging an RC:
+
+- README must describe the complete implemented Version 1 slice, not stop at an earlier milestone;
+- `ARCHITECTURE.md` must distinguish implemented modules from target/future boundaries;
+- `ROADMAP.md` must not imply a full horizon is complete when Version 1 implements only a subset;
+- domain documents must describe current behavior and deferred scope rather than obsolete "next milestone" language;
+- `apps/api/README.md` and `apps/web/README.md` must document Aurevia, not framework-generator boilerplate;
+- release evidence must identify the exact candidate SHA and must not mark manual checks complete without evidence;
+- every link/command changed by implementation work must be reviewed as part of the same milestone.
+
 ## Release blockers
 
 Do not tag the RC when any of the following is known:

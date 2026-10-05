@@ -1,6 +1,6 @@
-# GraphQL Backend Foundation
+# GraphQL Application Boundary
 
-Aurevia Health uses GraphQL as the first-party application boundary between Angular and Laravel. Ordinary product reads and writes must not introduce parallel REST CRUD endpoints.
+Aurevia Health uses GraphQL as the first-party application boundary between Angular and Laravel. Ordinary product reads and writes must not introduce parallel REST CRUD endpoints. The Version 1 schema now composes organization, identity, audit, patient, privacy, scheduling, encounter, clinical and interoperability domains.
 
 ## Server
 
@@ -82,13 +82,21 @@ Do not put patient identifiers or other sensitive healthcare data in correlation
 ```text
 apps/api/graphql/
 ├── schema.graphql
-└── system/
-    └── system.graphql
+├── system/
+├── organization/
+├── identity/
+├── audit/
+├── patient/
+├── privacy/
+├── scheduling/
+├── encounter/
+├── clinical/
+└── interoperability/
 ```
 
-Future domains add schema files under their own folders and extend the root query/mutation types rather than turning the root schema into one large file.
+`schema.graphql` composes domain-owned schema files. New domains continue this pattern rather than turning the root schema into one large file.
 
-The initial health-neutral contract is:
+The base system contract remains:
 
 ```graphql
 query SystemInfo {
@@ -100,9 +108,9 @@ query SystemInfo {
 }
 ```
 
-## Install or Update the GraphQL Dependency
+## Maintain the GraphQL Dependency
 
-After applying the GraphQL foundation patch with the Docker stack running:
+For an intentional Lighthouse dependency update with the Docker stack running:
 
 ```cmd
 scripts\graphql.cmd

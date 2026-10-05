@@ -16,9 +16,26 @@ After stable releases begin, supported versions must be listed here explicitly.
 
 Do not disclose suspected vulnerabilities through a public issue.
 
-Before a public repository is launched, configure a private vulnerability-reporting channel such as GitHub Private Vulnerability Reporting or a dedicated security contact and update this section with the approved process.
+Do not report a suspected vulnerability through a public issue. Use the repository's private vulnerability-reporting/security-advisory channel when available, or contact the project owner through an approved private channel. This document must be updated if a formal security contact or disclosure SLA is established.
 
 Never include real patient information, production credentials, access tokens, or unredacted production logs in a vulnerability report.
+
+## Current Version 1 Security Baseline
+
+Version 1 currently implements and tests:
+
+- stateful first-party Sanctum session authentication with CSRF protection;
+- server-side organization membership, role and facility-scope authorization;
+- cross-tenant, wrong-facility and revoked-membership negative paths;
+- patient privacy decisions, consent revocation and reasoned/time-bounded break-glass access;
+- structured allowed/denied audit evidence with correlation IDs;
+- signed clinical-note immutability and append-only correction/addendum behavior;
+- GraphQL depth/complexity/pagination controls and no parallel first-party REST CRUD boundary;
+- Composer and production npm dependency audits in CI;
+- a production environment template with `APP_DEBUG=false`, HTTPS-oriented session settings, explicit trusted hosts/proxies and external secret placeholders;
+- synthetic-only release validation, clean migration rehearsal and local backup/restore rehearsal.
+
+These are engineering controls, not a claim of HIPAA, NHS, ABDM, GDPR or other jurisdiction-specific compliance.
 
 ## Repository Security Requirements
 

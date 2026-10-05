@@ -6,6 +6,8 @@ This checklist wins when nearby code disagrees with it. Matching an existing vio
 * [ ] No commented-out code
 * [ ] No duplicated/copied code
 * [ ] Checklist followed even when a nearby class does not follow it
+* [ ] Country-specific behavior stays behind country-profile/policy/adapter boundaries
+* [ ] Real patient data, production identifiers and secrets never enter fixtures, logs or examples
 
 **Notes:**
 
@@ -49,12 +51,23 @@ This checklist wins when nearby code disagrees with it. Matching an existing vio
 * Do not chain Eloquent outside a model or repository. Filtering, sorting, or constraining a relation in a service is a query, even when the relation is already loaded.
 
   ```php
-  // BAD — chained query in a service
-  $project->scenes->reject(...)->sortBy(...);
+  // BAD — chained persistence/query behavior in a service
+  $patient->encounters()->where('status', 'IN_PROGRESS')->latest()->first();
 
-  // GOOD — the chain lives on the model
-  $project->orderedNarrativeScenes();
+  // GOOD — query behavior lives on the model/repository boundary
+  $patient->currentEncounter();
   ```
+
+## Clinical, Privacy and Audit Safety
+* [ ] Patient/organization/facility/encounter bindings are revalidated server-side for clinical writes
+* [ ] Signed clinical documentation is never silently overwritten
+* [ ] Consent and break-glass decisions supplement, never replace, identity/role/facility authorization
+* [ ] Break-glass requires a specific reason, bounded lifetime and audit evidence
+* [ ] Duplicate-patient candidates never auto-merge
+* [ ] Terminology mappings never guess an absent clinical translation
+* [ ] Expected business-rule rejection is distinguished from unexpected server failure
+* [ ] Protected operations add or deliberately reuse stable audit vocabulary
+* [ ] Correlation IDs do not contain patient identifiers or sensitive payloads
 
 ## GraphQL Application Boundary
 * [ ] GraphQL is the default application API boundary for first-party product data and workflows
@@ -92,6 +105,10 @@ This checklist wins when nearby code disagrees with it. Matching an existing vio
 
 ## Documentation
 * [ ] Justified associative-array shapes documented in PHPDoc
+* [ ] README and the owning domain document are updated when behavior, commands, boundaries or release evidence changes
+* [ ] Current implementation is clearly separated from roadmap/future intent
+* [ ] Documentation never claims regulatory compliance or production readiness without evidence
+* [ ] Known limitations and intentionally deferred healthcare scope stay explicit
 * [ ] No @param/@return in docblocks when the signature already types the value
 * [ ] Conditions are named, including single comparisons
 * [ ] No magic numbers or strings in application code (tests are exempt)
@@ -155,7 +172,7 @@ class UserActivityLogServiceTest extends TestCase
 * [ ] Real dependencies are exercised — database, query builders, factories, etc.
 * [ ] Factories used to seed database data in `setUp` or per test
 * [ ] Model query/relation/constraint tests belong here (e.g. `tests/Integration/Models/`), not under `Unit/` or `Feature/`
-* [ ] For LLM workflow evals, prefer behavioral/tendency assertions over single-run deterministic prose outcomes (see `app/Agents/Workflows/Evals/README.md`)
+* [ ] Healthcare workflow tests prefer durable domain invariants (scope, lifecycle, provenance, privacy, idempotency and audit) over presentation-only assertions
 
 ### Feature (`tests/Feature/`)
 * [ ] GraphQL queries/mutations and approved HTTP exceptions are tested through the application boundary
@@ -167,7 +184,7 @@ class UserActivityLogServiceTest extends TestCase
 - New REST controller/route for ordinary application CRUD => model it as a GraphQL query or mutation; keep HTTP routes only for approved protocol/infrastructure exceptions
 - Eloquent/query builder use in a GraphQL resolver => move persistence/query logic to a Model or Repository and keep the resolver thin
 - GraphQL `JSON` used for a value that has a stable domain shape => define an explicit GraphQL input/object type
-- Eloquent chain in a service or controller (`$project->scenes->reject()->sortBy()`) => move the chain into an instance method on the model and call that method
+- Eloquent/query chain in a service or controller (`$patient->encounters()->where(...)`) => move the query into the owning model/repository boundary and call that method
 - Copied private helper => move the helper to its owner and call it; do not copy it because another class already did
 - `new SomeService(...)` => inject the service, or resolve it with `App::make()`
 - New static method for behavior with dependencies => inject that behavior; calling an existing dependency-free static (`tryFrom`, `fromArray`, a factory, a guard) is fine

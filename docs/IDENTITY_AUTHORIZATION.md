@@ -59,7 +59,7 @@ Initial roles:
 
 The role matrix is only the RBAC portion of the decision. `OrganizationAccessPolicy` also evaluates facility scope and whether an operation requires all-facility authority. That contract is the Version 1 ABAC extension point.
 
-Future attributes may include department, patient relationship, encounter, purpose of use, consent, jurisdiction, data sensitivity, and break-glass state.
+Version 1 now extends this base policy with patient and encounter context plus explicit consent/privacy and break-glass decisions in the patient-facing domains. Department/care-team relationship, broader purpose-of-use and data-sensitivity ABAC remain extension points.
 
 ## Facility Scope
 
@@ -164,7 +164,9 @@ This is an authorization foundation, not the final enterprise identity program. 
 - OIDC or SAML enterprise federation;
 - password recovery/user provisioning workflows;
 - remote session inventory or revoke-other-session controls;
-- purpose-of-use, consent, patient relationship, care-team, or break-glass attributes.
+- enterprise-grade care-team/relationship ABAC and broader purpose/data-sensitivity policy attributes.
+
+Consent and break-glass are no longer future-only concepts: V1-M5 applies them through the privacy boundary for relevant patient, scheduling, encounter and clinical workflows.
 
 Membership revocation immediately removes organization authorization on the next request. V1-M3 now persists organization-scoped authorization evidence and exposes it only to all-facility owners and administrators. Authentication-specific login/logout event vocabulary and patient-scoped audit context can extend the same audit boundary as later milestones introduce those requirements.
 

@@ -50,7 +50,7 @@ Patient access is server enforced.
 - patient reads evaluate the patient's registration-facility scope.
 - cross-organization search/read is denied.
 
-Later encounter/care-team, purpose-of-use, consent, and break-glass attributes extend this policy boundary rather than replacing it.
+Version 1 encounter workflows and the consent/break-glass privacy boundary now extend this policy without replacing organization/role/facility authorization. Richer care-team relationship and purpose-specific ABAC remain future extensions.
 
 ## GraphQL Boundary
 
@@ -78,7 +78,7 @@ Security-relevant denied access continues to use the durable denial flush introd
 
 ## Angular Patient Context
 
-`PatientContextService` and `PatientContextBannerComponent` provide a reusable wrong-patient-safety foundation. Clinical workflows can select one typed context and render name, date of birth, sex-at-birth value, and MRN prominently. V1-M4 does not yet introduce encounter editing; later clinical workflows must keep this context visible.
+`PatientContextService` and `PatientContextBannerComponent` provide a reusable wrong-patient-safety foundation. The implemented scheduling, encounter and clinical workspaces reuse patient context; the clinical record keeps the selected patient visible while Laravel independently revalidates patient/encounter binding on writes.
 
 ## Local Development Seeder
 

@@ -2,7 +2,7 @@
 
 V1-M7 establishes the country-neutral encounter boundary that connects patient identity and scheduling to later clinical documentation.
 
-## Scope in Stage A
+## Version 1 Scope
 
 The encounter aggregate owns:
 
@@ -17,7 +17,7 @@ The encounter aggregate owns:
 - patient-aware audit evidence;
 - a functional Angular encounter workspace.
 
-Participants and patient-location history are intentionally added in the next M7 stage so the initial lifecycle boundary can be verified independently.
+Participants and longitudinal patient-location history remain deferred beyond the current Version 1 encounter foundation. The implemented scope focuses on safe patient/facility/appointment binding, explicit lifecycle transitions, clinical privacy authorization, durable timeline evidence, and auditability.
 
 ## Lifecycle
 

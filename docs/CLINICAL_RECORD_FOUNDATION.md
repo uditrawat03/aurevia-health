@@ -58,7 +58,7 @@ A correction requires a reason. Neither operation overwrites the signed body.
 
 ### Terminology boundary
 
-Core tables do not hard-code one country's code set. Problems, allergies, and observations can carry `codeSystem` plus `code` while retaining a human-readable display. V1-M9 will add the formal terminology/mapping contracts.
+Core clinical tables do not hard-code one country's code set. Problems, allergies, and observations can carry `codeSystem` plus `code` while retaining a human-readable display. V1-M9 now supplies the formal multi-coding terminology concept, explicit code-system versioning, replaceable mapping contract and FHIR exchange mapper; it does not change the clinical tables into FHIR persistence.
 
 ### Privacy and authorization
 
@@ -182,7 +182,7 @@ V1-M8 tests cover:
 
 This milestone does not yet implement:
 
-- formal terminology registry/mapping/version resolution (V1-M9);
+- automatic terminology translation or production terminology-server integration (the M9 registry/mapping contracts are implemented, but governed translation remains deferred);
 - structured composite observations such as a first-class blood-pressure panel;
 - clinical task/order/result workflows;
 - medication or diagnostic workflows;

@@ -2,15 +2,15 @@
 
 ## Purpose
 
-V1-M9 establishes the Aurevia Health terminology and interoperability boundary without turning FHIR or any country-specific terminology into the internal persistence model.
+The Version 1 terminology and interoperability boundary keeps Aurevia Health clinical concepts independent from FHIR persistence and from any single country-specific terminology.
 
-The milestone is intentionally a contract foundation. It does not create a production FHIR server, connect to an external terminology service, or persist partner exchange payloads.
+The implemented scope is intentionally a contract foundation. It does not create a production FHIR server, connect to an external terminology service, or persist partner exchange payloads.
 
 ## Design Rules
 
 1. Clinical concepts are represented independently from any one terminology.
 2. A concept may carry multiple codings.
-3. Every coding crossing the M9 interoperability contract includes an explicit code-system version.
+3. Every coding crossing the Version 1 interoperability contract includes an explicit code-system version.
 4. Code systems are identified by absolute URI or URN values rather than local enum names.
 5. Known systems are discoverable through a registry, but the registry is not a closed whitelist.
 6. Mappings are explicit extension points; Aurevia never guesses a missing translation.
@@ -47,7 +47,7 @@ These entries are recommendations and metadata, not a closed allow-list. A count
 
 ## Versioning
 
-The M9 contract requires a non-empty `version` for every coding. This is stricter than the minimum FHIR `Coding` cardinality because Aurevia needs deterministic mapping and audit/reconciliation behavior across country and partner profiles.
+The Version 1 contract requires a non-empty `version` for every coding. This is stricter than the minimum FHIR `Coding` cardinality because Aurevia needs deterministic mapping and audit/reconciliation behavior across country and partner profiles.
 
 The platform must not silently replace a supplied version with a current/latest terminology version.
 
@@ -63,7 +63,7 @@ Future mapping implementations may use governed mapping catalogs, country profil
 
 `InteroperabilityMapper` is the anti-corruption contract between Aurevia domain concepts and exchange formats.
 
-V1-M9 provides `FhirR4InteroperabilityMapper`, pinned to FHIR R4 `4.0.1`. It maps a terminology concept to the `code` `CodeableConcept` shape of these initial clinical resource skeletons:
+Version 1 provides `FhirR4InteroperabilityMapper`, pinned to FHIR R4 `4.0.1`. It maps a terminology concept to the `code` `CodeableConcept` shape of these initial clinical resource skeletons:
 
 - `Condition`
 - `AllergyIntolerance`
@@ -85,7 +85,7 @@ The existing `X-Correlation-ID` request value is reused as the interoperability 
 
 ## GraphQL Contract Preview
 
-M9 adds three non-patient contract queries:
+Version 1 exposes three non-patient contract queries:
 
 ```graphql
 query {
@@ -155,7 +155,7 @@ git diff --check
 
 ## Known Limitations / Deferred Work
 
-V1-M9 deliberately does not include:
+The current Version 1 boundary deliberately does not include:
 
 - a FHIR REST server;
 - SMART on FHIR;

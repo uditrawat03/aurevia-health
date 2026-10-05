@@ -23,6 +23,24 @@ The platform should:
 9. support regional deployment and data-residency requirements;
 10. create a governed base for future AI features.
 
+## Current Version 1 Implementation Snapshot
+
+The architecture below includes both implemented Version 1 boundaries and deliberate future extension points. As of the V1 release-candidate hardening work, the implemented application slice includes:
+
+- organization/facility/department hierarchy and server-controlled country profiles;
+- first-party Sanctum session authentication, organization memberships, RBAC plus facility scope;
+- structured audit with durable denied-decision evidence;
+- patient identity/MPI candidate detection and non-destructive merge review;
+- consent, privacy decisions and time-bounded break-glass treatment access;
+- scheduling, appointment lifecycle, waitlist foundation and timezone-safe persistence;
+- controlled encounter lifecycle;
+- problems, allergies, observations, signed clinical notes, append-only amendments and longitudinal timeline;
+- terminology concepts with explicit code-system versions and a replaceable mapping contract;
+- a FHIR R4 exchange anti-corruption mapper and non-patient interoperability contract preview;
+- production-oriented configuration defaults and repeatable release-candidate quality, migration, restore and performance gates.
+
+Modules such as full inpatient nursing, pharmacy, LIS/PACS, surgery, claims, patient portal, production interoperability transport and AI remain roadmap capabilities. Their presence in target diagrams does **not** mean they are implemented in Version 1.
+
 ## 3. Baseline Technology
 
 ### Backend
@@ -129,6 +147,8 @@ apps/
 Do not create separate country applications such as `api-us`, `api-uk`, or `api-india`. Use one global core plus country-profile implementations.
 
 ## 7. Laravel Domain Structure
+
+The following is the **target domain map**. Version 1 implements the organization, identity, audit, patient, consent/privacy, scheduling, encounter, clinical, terminology and interoperability foundations; later entries remain planned boundaries until code and tests exist.
 
 ```text
 apps/api/app/
@@ -246,6 +266,8 @@ An authorization decision may consider actor, role, organization, facility, depa
 
 Angular route guards are UX controls only. Laravel is authoritative.
 
+Version 1 currently combines organization membership/role permission and facility scope with patient privacy decisions for protected patient, scheduling, encounter and clinical workflows. Consent and break-glass are implemented policy inputs; care-team relationship and richer purpose/context ABAC remain future extensions.
+
 ## 12. Patient Identity
 
 Use internal UUID/ULID keys. Never use national IDs, insurance IDs, NHS Number, ABHA Number, or organization MRNs as primary database keys.
@@ -259,6 +281,8 @@ Patient merge/unmerge must be explicit and auditable.
 Clinical records require stronger semantics than ordinary CRUD.
 
 Signed/finalized documentation uses correction or addendum workflows rather than silent overwrite. Preserve distinct timestamps such as event time, observed time, recorded time, signed time, and corrected time where applicable.
+
+Version 1 implements this rule for encounter-bound clinical notes: drafts are editable, signing freezes the original body, and later addenda/corrections are separate append-only records. Problems, allergies and observations retain patient/encounter provenance and feed the longitudinal timeline.
 
 ## 14. Audit Architecture
 
@@ -394,6 +418,8 @@ Manual Review
 ```
 
 Every inbound/outbound message should carry a correlation ID.
+
+Version 1 establishes the contract layer rather than a transport server: multiple versioned codings are supported, mappings never guess an absent translation, FHIR R4 `4.0.1` is mapped behind an anti-corruption boundary, and correlation IDs are returned with interoperability previews. Patient-level import/export, SMART on FHIR and production FHIR/HL7/DICOM transport remain deferred.
 
 ## 20. Terminology
 

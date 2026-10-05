@@ -79,7 +79,7 @@ Replacing organization, facility, or department overrides runs in one database t
 - request correlation ID;
 - change timestamp.
 
-This is narrowly scoped Version 1 configuration-change evidence. The broader protected-access audit architecture, actor model, denial evidence, and restricted audit viewer remain the responsibility of V1-M3.
+This configuration-change ledger remains narrowly scoped evidence. The completed V1 audit boundary additionally records protected authorization decisions, durable security-relevant denials and restricted audit-view access with stable action/resource vocabulary.
 
 ## GraphQL Boundary
 
@@ -129,4 +129,4 @@ docker exec aurevia-health-api composer audit
 
 Integration and database-backed GraphQL feature tests use `Tests\IntegrationTestCase`, `DatabaseTransactions`, and ordinary migrations. `RefreshDatabase` is not used.
 
-The milestone gate also requires `git diff --check`, migration review, synthetic-only fixtures, documentation review, and a clean commit before V1-M2 begins.
+These rules remain regression requirements for Version 1. Later identity, privacy, scheduling, encounter and clinical modules build on this organization/facility scope rather than replacing it.

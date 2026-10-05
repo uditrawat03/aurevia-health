@@ -59,11 +59,13 @@ Only organization-wide `OWNER` and `ADMIN` memberships receive `VIEW_AUDIT`. Fac
 
 The viewer returns newest events first and accepts a limit from 1 through 100, with a default of 50.
 
-## Patient Context
+## Patient Context and Version 1 Coverage
 
-`patient_id` is nullable in V1-M3 because the patient identity aggregate is introduced in V1-M4. The column and typed DTO field establish the audit contract now so patient-scoped modules can attach patient context without redesigning the audit schema.
+`patient_id` remains nullable because organization-only events do not necessarily involve a patient. Patient identity, privacy, scheduling, encounter and clinical operations now attach patient context where the audited action is patient-scoped.
 
-No patient information or clinical payload is placed in generic audit metadata because this foundation intentionally avoids a schemaless JSON payload containing sensitive healthcare data.
+The stable Version 1 audit vocabulary covers organization/settings, memberships, patients/merge review, consent/privacy/break-glass, scheduling/waitlist, encounters and clinical-record/note lifecycle operations. The audit viewer remains restricted to organization-wide owner/admin authority.
+
+No patient information or clinical payload is placed in generic audit metadata; the audit record carries identifiers/context needed for traceability without becoming a duplicate clinical data store.
 
 ## Verification
 

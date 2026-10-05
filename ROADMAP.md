@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This roadmap describes the intended product progression for the Aurevia Health. It is capability-oriented rather than date-driven.
+This roadmap describes the intended product progression for Aurevia Health. It is capability-oriented rather than date-driven and distinguishes delivered Version 1 foundations from future hospital-platform scope.
 
 Detailed Version 1 gates are defined in [version_1_milestones.md](version_1_milestones.md).
 
@@ -21,6 +21,21 @@ Intelligence and Optimization
 ```
 
 The platform should not begin with AI, dashboards, or country-specific billing before identity, authorization, audit, patient identity, privacy, and encounter boundaries exist.
+
+## Current Position
+
+The Version 1 release-candidate scope delivers the trust-first outpatient/clinical foundation that precedes the broader roadmap. This does **not** mean every capability listed in Horizons 1–3 is complete.
+
+| Horizon | Version 1 position |
+|---|---|
+| Horizon 0 | **Implemented** — repository, Laravel/Angular, PostgreSQL/Redis, Docker, CI, documentation and release gates |
+| Horizon 1 | **Core subset implemented** — organization, country profile, session auth, memberships/roles/facility scope, audit, patient identity, consent/privacy and break-glass |
+| Horizon 2 | **Outpatient subset implemented** — scheduling, waitlist foundation and controlled encounter lifecycle; inpatient bed/admission/transfer/discharge remain future |
+| Horizon 3 | **Core record subset implemented** — problems, allergies, observations, signed notes, corrections/addenda, timeline and terminology boundary; orders/results/care-team/task systems remain future |
+| Horizon 9 | **Contract foundation implemented** — versioned terminology and FHIR exchange mapping contracts; production transport/integration operations remain future |
+| Horizons 4–8, 10–14 | **Future roadmap** |
+
+The next roadmap work should extend these boundaries without weakening the Version 1 authorization, privacy, audit, provenance, signed-record and tenant-isolation invariants.
 
 # Horizon 0 — Engineering Foundation
 

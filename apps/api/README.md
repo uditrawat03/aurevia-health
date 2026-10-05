@@ -1,58 +1,58 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Aurevia Health API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+`apps/api` is the Laravel 13 application that owns Aurevia Health's Version 1 domain, authorization, privacy, audit and GraphQL boundaries.
 
-## About Laravel
+## Responsibilities
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The API is authoritative for:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- organization/facility scope and country-profile resolution;
+- first-party session authentication and membership/role/facility authorization;
+- patient identity and duplicate-candidate review;
+- consent/privacy and break-glass decisions;
+- scheduling and encounter lifecycle rules;
+- core clinical record provenance and signed-note integrity;
+- audit evidence;
+- terminology and interoperability contracts.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The first-party application API is GraphQL at `/graphql`. Do not add ordinary Aurevia domain CRUD under `/api/...`; protocol/infrastructure exceptions must remain explicit.
 
-## Learning Laravel
+## Local Runtime
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+From the repository root:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```powershell
+scripts\docker.cmd up
+scripts\docker.cmd migrate
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Useful checks:
 
-## Contributing
+```powershell
+docker exec aurevia-health-api php artisan lighthouse:validate-schema
+docker exec aurevia-health-api php artisan test
+docker exec aurevia-health-api composer audit
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The local Docker profile uses PostgreSQL and Redis. Development `.env`/Compose defaults are not production configuration.
 
-## Code of Conduct
+## Production Configuration
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Start deployment configuration from `.env.production.example`, replace all example hosts, inject secrets through the deployment secret store, and review trusted hosts/proxies, TLS termination, session cookies, Sanctum stateful domains and operational access before serving traffic.
 
-## Security Vulnerabilities
+## Tests
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- `tests/Unit` — isolated domain/application behavior without database access.
+- `tests/Integration` — database-backed model/repository/service behavior.
+- `tests/Feature` — GraphQL and approved HTTP-boundary behavior.
+- `tests/Performance/V1PerformanceBaseline.php` — explicit local RC benchmark, not part of normal timing assertions.
 
-## License
+Use synthetic healthcare data only.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Further Documentation
+
+- [`../../ARCHITECTURE.md`](../../ARCHITECTURE.md)
+- [`../../CODING_GUIDELINES.md`](../../CODING_GUIDELINES.md)
+- [`../../docs/GRAPHQL_BACKEND.md`](../../docs/GRAPHQL_BACKEND.md)
+- [`../../docs/RELEASE_HARDENING.md`](../../docs/RELEASE_HARDENING.md)
+- [`../../docs/README.md`](../../docs/README.md)
