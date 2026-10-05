@@ -25,7 +25,7 @@ use App\Models\ClinicalProblem;
 use App\Models\PatientAllergy;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
-use DomainException;
+use App\Exceptions\ExpectedBusinessRuleViolation as DomainException;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\Collection;
 

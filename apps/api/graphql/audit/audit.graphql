@@ -40,6 +40,17 @@ enum AuditAction {
     START_ENCOUNTER
     COMPLETE_ENCOUNTER
     CANCEL_ENCOUNTER
+    VIEW_CLINICAL_RECORD
+    MANAGE_CLINICAL_RECORD
+    RECORD_PROBLEM
+    UPDATE_PROBLEM_STATUS
+    RECORD_ALLERGY
+    RECORD_OBSERVATION
+    CREATE_CLINICAL_NOTE
+    UPDATE_CLINICAL_NOTE_DRAFT
+    SIGN_CLINICAL_NOTE
+    ADD_CLINICAL_NOTE_ADDENDUM
+    CORRECT_CLINICAL_NOTE
 }
 
 "Generic resource classification kept independent from country-specific identifiers."
@@ -59,6 +70,11 @@ enum AuditResourceType {
     APPOINTMENT_TYPE
     WAITLIST_ENTRY
     ENCOUNTER
+    CLINICAL_RECORD
+    CLINICAL_PROBLEM
+    PATIENT_ALLERGY
+    CLINICAL_OBSERVATION
+    CLINICAL_NOTE
 }
 
 "Append-oriented evidence for a protected operation or security-relevant denial."

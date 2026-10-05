@@ -27,7 +27,7 @@ use App\Domains\Privacy\Enums\ConsentDataCategory;
 use App\Domains\Privacy\Enums\ConsentPurpose;
 use App\Domains\Privacy\Enums\ConsentRecipientClass;
 use Carbon\CarbonImmutable;
-use DomainException;
+use App\Exceptions\ExpectedBusinessRuleViolation as DomainException;
 
 final readonly class ClinicalRecordService
 {

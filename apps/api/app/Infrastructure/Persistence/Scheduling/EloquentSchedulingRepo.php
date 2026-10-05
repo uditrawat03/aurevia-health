@@ -28,7 +28,7 @@ use App\Models\SchedulingResource;
 use App\Models\WaitlistEntry;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
-use DomainException;
+use App\Exceptions\ExpectedBusinessRuleViolation as DomainException;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Eloquent\Builder;
 use RuntimeException;

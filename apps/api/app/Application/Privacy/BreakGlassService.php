@@ -12,7 +12,7 @@ use App\Domains\Privacy\Data\PersistBreakGlassAccessData;
 use App\Domains\Privacy\Enums\ConsentPurpose;
 use App\Domains\Privacy\Repositories\PrivacyRepo;
 use Carbon\CarbonImmutable;
-use DomainException;
+use App\Exceptions\ExpectedBusinessRuleViolation as DomainException;
 
 final readonly class BreakGlassService
 {

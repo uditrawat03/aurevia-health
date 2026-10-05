@@ -23,7 +23,7 @@ use App\Domains\Privacy\Enums\ConsentRecipientClass;
 use App\Domains\Scheduling\Enums\AppointmentStatus;
 use App\Domains\Scheduling\Repositories\SchedulingRepo;
 use Carbon\CarbonImmutable;
-use DomainException;
+use App\Exceptions\ExpectedBusinessRuleViolation as DomainException;
 
 final readonly class EncounterService
 {
