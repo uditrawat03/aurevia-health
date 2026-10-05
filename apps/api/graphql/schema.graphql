@@ -11,3 +11,4 @@ type Query {
 #import scheduling/*.graphql
 #import encounter/*.graphql
 #import clinical/*.graphql
+#import interoperability/*.graphql

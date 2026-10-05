@@ -321,6 +321,16 @@ These credentials are intentionally local-development-only. The demo seeder is d
 
 See [docs/PATIENT_IDENTITY_MPI.md](docs/PATIENT_IDENTITY_MPI.md) for patient identity modeling, duplicate matching, merge-review safety, authorization, auditing, the patient-context banner foundation, and seed-data details.
 
+## Terminology and Interoperability Contracts
+
+V1-M9 adds a country-neutral terminology concept that can carry multiple explicitly versioned codings, a replaceable terminology-mapping contract, a correlation-aware interoperability envelope, and an anti-corruption mapper for a pinned FHIR R4 `4.0.1` boundary. FHIR remains an exchange representation rather than an Eloquent/database model.
+
+The initial terminology registry advertises SNOMED CT, LOINC, ICD-10 International, and an Aurevia/local extension URI while still accepting other absolute URI/URN code systems. The default mapping behavior never guesses clinical translations: it may select a target-system coding already present on a concept, otherwise it rejects the mapping until a governed adapter is configured.
+
+M9 exposes non-patient GraphQL contract queries for terminology-system discovery, supported interoperability profiles, and concept-to-FHIR preview. Patient-level import/export transport, SMART on FHIR, terminology-server calls, HL7 v2/DICOM transport, and automatic code translation remain outside this milestone.
+
+See [docs/TERMINOLOGY_INTEROPERABILITY.md](docs/TERMINOLOGY_INTEROPERABILITY.md) for the terminology model, mapping rules, FHIR boundary, correlation behavior, GraphQL preview contract, verification steps, and deferred production-integration work.
+
 ## Development Principles
 
 ### 1. Core before country specifics
@@ -397,6 +407,7 @@ Start with:
 - [docs/IDENTITY_AUTHORIZATION.md](docs/IDENTITY_AUTHORIZATION.md) — session authentication, memberships, role/facility authorization, and ABAC extension points.
 - [docs/AUDIT_FOUNDATION.md](docs/AUDIT_FOUNDATION.md) — structured audit evidence, denial durability, and restricted audit viewing.
 - [docs/PATIENT_IDENTITY_MPI.md](docs/PATIENT_IDENTITY_MPI.md) — patient identity, MPI duplicate review, secure search, patient audit context, and local demo seeding.
+- [docs/TERMINOLOGY_INTEROPERABILITY.md](docs/TERMINOLOGY_INTEROPERABILITY.md) — versioned terminology concepts, mapping contracts, FHIR boundary, and correlation behavior.
 - [SECURITY.md](SECURITY.md) — repository security expectations and release blockers.
 
 ## Initial Definition of Ready

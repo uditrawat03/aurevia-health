@@ -1,0 +1,76 @@
+"A versioned coding from a terminology system. Versions are mandatory at the Aurevia interoperability contract boundary."
+type TerminologyCoding {
+    system: String!
+    version: String!
+    code: String!
+    display: String!
+    userSelected: Boolean!
+}
+
+"A country-neutral clinical concept that may carry multiple equivalent codings."
+type TerminologyConcept {
+    text: String!
+    codings: [TerminologyCoding!]!
+}
+
+"A recommended terminology system known to the core registry. Unknown absolute URI/URN systems remain valid extension points."
+type TerminologySystem {
+    system: String!
+    name: String!
+    versionRequired: Boolean!
+    scope: String!
+}
+
+"An explicit exchange-profile boundary. The profile is not an internal persistence model."
+type InteroperabilityProfile {
+    code: String!
+    standard: String!
+    version: String!
+    mediaType: String!
+}
+
+enum InteroperabilityClinicalConceptType {
+    CONDITION
+    ALLERGY_INTOLERANCE
+    OBSERVATION
+}
+
+input TerminologyCodingInput {
+    system: String!
+    version: String!
+    code: String!
+    display: String!
+    userSelected: Boolean = false
+}
+
+input TerminologyConceptInput {
+    text: String!
+    codings: [TerminologyCodingInput!]!
+}
+
+input InteroperabilityConceptPreviewInput {
+    resourceType: InteroperabilityClinicalConceptType!
+    concept: TerminologyConceptInput!
+    targetSystem: String
+}
+
+type InteroperabilityConceptPreview {
+    correlationId: String!
+    occurredAt: String!
+    standard: String!
+    standardVersion: String!
+    resourceType: InteroperabilityClinicalConceptType!
+    concept: TerminologyConcept!
+    payloadJson: String!
+}
+
+extend type Query {
+    terminologySystems: [TerminologySystem!]!
+        @field(resolver: "App\\GraphQL\\Queries\\TerminologySystemsQuery")
+
+    interoperabilityProfiles: [InteroperabilityProfile!]!
+        @field(resolver: "App\\GraphQL\\Queries\\InteroperabilityProfilesQuery")
+
+    interoperabilityConceptPreview(input: InteroperabilityConceptPreviewInput!): InteroperabilityConceptPreview!
+        @field(resolver: "App\\GraphQL\\Queries\\InteroperabilityConceptPreviewQuery")
+}

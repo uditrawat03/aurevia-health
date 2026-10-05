@@ -14,6 +14,7 @@ use App\Domains\Encounter\Repositories\EncounterRepo;
 use App\Domains\Identity\Authorization\OrganizationAccessPolicy;
 use App\Domains\Identity\Authorization\RoleAndScopeOrganizationAccessPolicy;
 use App\Domains\Identity\Repositories\IdentityRepo;
+use App\Domains\Interoperability\Contracts\InteroperabilityMapper;
 use App\Domains\Organization\Repositories\OrganizationRepo;
 use App\Domains\Patient\Repositories\PatientRepo;
 use App\Domains\Privacy\Authorization\ConsentAndBreakGlassPrivacyPolicy;
@@ -22,6 +23,9 @@ use App\Domains\Privacy\Authorization\CountryProfilePrivacyPolicyRegistry;
 use App\Domains\Privacy\Authorization\PrivacyPolicy;
 use App\Domains\Privacy\Repositories\PrivacyRepo;
 use App\Domains\Scheduling\Repositories\SchedulingRepo;
+use App\Domains\Terminology\Mapping\TerminologyMappingContract;
+use App\Domains\Terminology\Registry\TerminologyRegistry;
+use App\Infrastructure\Interoperability\FhirR4InteroperabilityMapper;
 use App\Infrastructure\Persistence\Audit\EloquentAuditRepo;
 use App\Infrastructure\Persistence\Clinical\EloquentClinicalRecordRepo;
 use App\Infrastructure\Persistence\Encounter\EloquentEncounterRepo;
@@ -30,6 +34,8 @@ use App\Infrastructure\Persistence\Organization\EloquentOrganizationRepo;
 use App\Infrastructure\Persistence\Patient\EloquentPatientRepo;
 use App\Infrastructure\Persistence\Privacy\EloquentPrivacyRepo;
 use App\Infrastructure\Persistence\Scheduling\EloquentSchedulingRepo;
+use App\Infrastructure\Terminology\DefaultTerminologyRegistry;
+use App\Infrastructure\Terminology\ExistingCodingTerminologyMapping;
 use Illuminate\Support\ServiceProvider;
 
 final class AppServiceProvider extends ServiceProvider
@@ -46,6 +52,9 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->bind(PatientRepo::class, EloquentPatientRepo::class);
         $this->app->bind(PrivacyRepo::class, EloquentPrivacyRepo::class);
         $this->app->bind(SchedulingRepo::class, EloquentSchedulingRepo::class);
+        $this->app->bind(TerminologyRegistry::class, DefaultTerminologyRegistry::class);
+        $this->app->bind(TerminologyMappingContract::class, ExistingCodingTerminologyMapping::class);
+        $this->app->bind(InteroperabilityMapper::class, FhirR4InteroperabilityMapper::class);
         $this->app->bind(OrganizationAccessPolicy::class, RoleAndScopeOrganizationAccessPolicy::class);
         $this->app->bind(PrivacyPolicy::class, ConsentAndBreakGlassPrivacyPolicy::class);
         $this->app->bind(
