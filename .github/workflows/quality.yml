@@ -112,3 +112,37 @@ jobs:
 
       - name: Production build
         run: npm run build
+
+  browser-e2e:
+    name: Browser E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Prepare browser artifact directory
+        run: mkdir -p artifacts/browser-e2e
+
+      - name: Run isolated Python browser acceptance stack
+        run: >-
+          docker compose
+          -f infrastructure/docker/compose.e2e.yml
+          up
+          --build
+          --abort-on-container-exit
+          --exit-code-from browser-e2e
+          browser-e2e
+
+      - name: Upload browser failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-e2e-artifacts
+          path: artifacts/browser-e2e
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Tear down browser acceptance stack
+        if: always()
+        run: docker compose -f infrastructure/docker/compose.e2e.yml down --volumes --remove-orphans

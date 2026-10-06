@@ -224,9 +224,16 @@ Useful commands:
 scripts\docker.cmd status
 scripts\docker.cmd migrate
 scripts\docker.cmd test
+scripts\docker.cmd e2e
 scripts\docker.cmd logs
 scripts\docker.cmd down
 ```
+
+### Browser acceptance testing
+
+`scripts\docker.cmd e2e` runs a separate, disposable browser-acceptance stack with **Python 3.14.7**, **pytest 9.1.1**, **Playwright 1.63.0**, and Chromium. The stack has its own PostgreSQL/Redis data, seeds synthetic demo data, drives Angular through a real browser, captures screenshots/traces on failure, and removes the isolated volumes after the run.
+
+No host Python installation is required. See [docs/BROWSER_E2E_TESTING.md](docs/BROWSER_E2E_TESTING.md) for test-writing rules, architecture, artifacts and debugging guidance.
 
 The Windows `.cmd` helper does not depend on PowerShell script execution policy. See [docs/DOCKER_DEVELOPMENT.md](docs/DOCKER_DEVELOPMENT.md) for details.
 

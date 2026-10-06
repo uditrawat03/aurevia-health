@@ -1,0 +1,229 @@
+name: aurevia-health-e2e
+
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: aurevia_health_e2e
+      POSTGRES_USER: aurevia_health
+      POSTGRES_PASSWORD: aurevia_health_e2e
+      PGDATA: /var/lib/postgresql/18/docker
+    volumes:
+      - e2e_postgres:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aurevia_health -d aurevia_health_e2e"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 5s
+    networks: [e2e]
+
+  redis:
+    image: redis:8-alpine
+    command: ["redis-server", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+      start_period: 3s
+    networks: [e2e]
+
+  api-deps:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/api/Dockerfile.dev
+    working_dir: /var/www/html
+    entrypoint: []
+    environment:
+      COMPOSER_MAX_PARALLEL_HTTP: "4"
+      COMPOSER_PROCESS_TIMEOUT: "900"
+    volumes:
+      - ../../apps/api:/var/www/html
+      - e2e_api_vendor:/var/www/html/vendor
+    command:
+      - sh
+      - -lc
+      - >-
+        set -eu;
+        for attempt in 1 2 3; do
+          echo "Composer dist install attempt $${attempt}/3";
+          if composer install --no-interaction --prefer-dist --no-progress; then
+            exit 0;
+          fi;
+          echo "Composer dist install attempt $${attempt} failed; cleaning partial vendor contents before retry.";
+          find vendor -mindepth 1 -maxdepth 1 -exec rm -rf {} +;
+          sleep $$((attempt * 5));
+        done;
+        echo "Composer dist retries exhausted; trying source installation fallback.";
+        find vendor -mindepth 1 -maxdepth 1 -exec rm -rf {} +;
+        composer install --no-interaction --prefer-source --no-progress
+    networks: [e2e]
+
+  api:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/api/Dockerfile.dev
+    working_dir: /var/www/html
+    entrypoint: []
+    environment:
+      APP_ENV: local
+      APP_KEY: base64:rfiPwaGEIwCb4YDDWjoZDYJw3XZvGKi9/2SzgQzBwIs=
+      APP_DEBUG: "false"
+      APP_URL: http://aurevia.test:4200
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: aurevia_health_e2e
+      DB_USERNAME: aurevia_health
+      DB_PASSWORD: aurevia_health_e2e
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+      SESSION_DOMAIN: aurevia.test
+      SESSION_SECURE_COOKIE: "false"
+      SANCTUM_STATEFUL_DOMAINS: aurevia.test:4200,web:4200
+      TRUSTED_HOSTS: ^(?:127\.0\.0\.1|localhost|aurevia\.test|web)$
+    volumes:
+      - ../../apps/api:/var/www/html
+      - e2e_api_vendor:/var/www/html/vendor
+    depends_on:
+      api-deps:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    command:
+      - sh
+      - -lc
+      - >-
+        php artisan migrate --force
+        && php artisan db:seed --force
+        && php artisan serve --host=0.0.0.0 --port=8000 --no-reload
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "--silent", "http://127.0.0.1:8000/up"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+    networks: [e2e]
+
+  horizon:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/api/Dockerfile.dev
+    working_dir: /var/www/html
+    entrypoint: []
+    environment:
+      APP_ENV: local
+      APP_KEY: base64:rfiPwaGEIwCb4YDDWjoZDYJw3XZvGKi9/2SzgQzBwIs=
+      APP_DEBUG: "false"
+      DB_CONNECTION: pgsql
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: aurevia_health_e2e
+      DB_USERNAME: aurevia_health
+      DB_PASSWORD: aurevia_health_e2e
+      REDIS_CLIENT: phpredis
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      CACHE_STORE: redis
+      QUEUE_CONNECTION: redis
+      SESSION_DRIVER: redis
+    volumes:
+      - ../../apps/api:/var/www/html
+      - e2e_api_vendor:/var/www/html/vendor
+    depends_on:
+      api:
+        condition: service_healthy
+    command: ["php", "artisan", "horizon"]
+    networks: [e2e]
+
+  web-deps:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/web/Dockerfile.dev
+    working_dir: /workspace
+    entrypoint: []
+    volumes:
+      - ../../apps/web:/workspace
+      - e2e_web_node_modules:/workspace/node_modules
+    command: ["npm", "ci", "--no-audit", "--no-fund"]
+    networks: [e2e]
+
+  web:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/web/Dockerfile.dev
+    working_dir: /workspace
+    entrypoint: []
+    volumes:
+      - ../../apps/web:/workspace
+      - e2e_web_node_modules:/workspace/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+      web-deps:
+        condition: service_completed_successfully
+    command:
+      - npm
+      - start
+      - --
+      - --configuration
+      - e2e
+      - --host
+      - 0.0.0.0
+      - --poll
+      - "1000"
+      - --proxy-config
+      - /docker/proxy.conf.json
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - >-
+          fetch('http://127.0.0.1:4200')
+          .then(r=>{if(!r.ok)process.exit(1)})
+          .catch(()=>process.exit(1))
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 60s
+    networks:
+      e2e:
+        aliases:
+          - aurevia.test
+
+  browser-e2e:
+    build:
+      context: ../..
+      dockerfile: infrastructure/docker/browser-e2e/Dockerfile
+    init: true
+    ipc: host
+    environment:
+      AUREVIA_WEB_BASE_URL: http://aurevia.test:4200
+      AUREVIA_E2E_ARTIFACTS_DIR: /artifacts
+      AUREVIA_E2E_OWNER_EMAIL: owner@aurevia.local
+      AUREVIA_E2E_OWNER_PASSWORD: AureviaLocal123!
+    volumes:
+      - ../../tests/browser:/workspace:ro
+      - ../../artifacts/browser-e2e:/artifacts
+    depends_on:
+      web:
+        condition: service_healthy
+      horizon:
+        condition: service_started
+    networks: [e2e]
+
+networks:
+  e2e:
+
+volumes:
+  e2e_postgres:
+  e2e_api_vendor:
+  e2e_web_node_modules:

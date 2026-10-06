@@ -102,9 +102,21 @@ scripts\docker.cmd migrate
 
 ## Tests
 
+Backend and Angular unit/integration suites:
+
 ```cmd
 scripts\docker.cmd test
 ```
+
+Full browser acceptance:
+
+```cmd
+scripts\docker.cmd e2e
+```
+
+The E2E command uses `infrastructure/docker/compose.e2e.yml`, a separate `aurevia-health-e2e` Docker project with isolated PostgreSQL/Redis data, Laravel/Horizon/Angular services and a Python 3.14 Playwright runner. It migrates and seeds only synthetic data, runs Chromium inside the Docker network, writes failure screenshots/traces under `artifacts/browser-e2e/`, and removes E2E volumes after the run.
+
+This stack must remain isolated from production data and from the normal development database. See [BROWSER_E2E_TESTING.md](BROWSER_E2E_TESTING.md).
 
 ## Verify Runtime Stores
 

@@ -21,6 +21,12 @@ Version 2 must preserve the invariants proven in `v1.0.0-rc.1`:
 
 Version 2 is not permission to weaken these rules for implementation speed.
 
+## Pre-Version-2 Browser Acceptance Gate
+
+Before `V2-M0` implementation begins, the Dockerized Python browser-acceptance foundation must be green on `main`. The standing suite uses Python 3.14, pytest, Playwright and Chromium against an isolated synthetic Laravel/Angular/PostgreSQL/Redis stack.
+
+Every Version 2 milestone that introduces or materially changes a critical user workflow must extend this browser suite at the appropriate level while retaining Laravel domain/feature tests and Angular unit tests. Browser coverage is a cross-boundary acceptance gate, not a substitute for lower-level safety and authorization testing.
+
 ## Version 2 Theme
 
 ```text
@@ -85,7 +91,8 @@ Every Version 2 milestone must include, where applicable:
 9. migration and rollback/forward-fix considerations;
 10. README plus owning domain documentation updates;
 11. synthetic acceptance data only;
-12. no unresolved high-severity dependency vulnerability.
+12. no unresolved high-severity dependency vulnerability;
+13. browser acceptance added/updated for critical cross-boundary user workflows.
 
 A milestone is not complete when only the happy-path UI works.
 

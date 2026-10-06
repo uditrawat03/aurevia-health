@@ -12,4 +12,5 @@
 **/coverage
 **/storage/logs
 **/bootstrap/cache/*.php
+artifacts/
 *.log

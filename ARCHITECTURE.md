@@ -70,8 +70,9 @@ Modules such as full inpatient nursing, pharmacy, LIS/PACS, surgery, claims, pat
 ### Infrastructure
 
 - Docker Compose for PostgreSQL and Redis, with an optional `app` profile for Laravel, Horizon, and Angular
+- a separate ephemeral browser-acceptance Compose topology using Python 3.14, pytest, Playwright, Chromium, Laravel, Angular, PostgreSQL, Redis, and Horizon
 - named container dependency volumes for Laravel `vendor` and Angular `node_modules`
-- GitHub Actions for baseline CI
+- GitHub Actions for baseline CI, including browser acceptance on the isolated E2E topology
 - object storage introduced before document-heavy clinical modules
 - search engine introduced only when authorization-safe indexing requirements are defined
 - analytics warehouse introduced separately from the production transactional database
@@ -86,7 +87,25 @@ Browser :4200 -> Angular -> /graphql proxy -> Laravel :8000
                                       |-> Redis :6379 / Horizon
 ```
 
-These development images are not production images.
+Browser acceptance is intentionally a separate runtime rather than a Python dependency inside Laravel or Angular:
+
+```text
+Python 3.14 / pytest / Playwright / Chromium
+                    |
+                    v
+             Angular web-e2e
+                    |
+             /graphql + /sanctum
+                    |
+                    v
+              Laravel api-e2e
+              /             \
+     PostgreSQL-e2e       Redis-e2e / Horizon-e2e
+```
+
+The E2E stack uses synthetic seeded data, its own Docker project/volumes, an internal `aurevia.test` hostname, and teardown with volume removal. It must never point browser automation at production healthcare environments by default.
+
+These development/test images are not production images.
 
 ## 4. System Context
 

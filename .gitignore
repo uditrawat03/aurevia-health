@@ -36,3 +36,9 @@ apps/web/dist/
 apps/web/.angular/
 apps/web/coverage/
 apps/web/.env*
+
+# Browser E2E
+artifacts/browser-e2e/
+tests/browser/.pytest_cache/
+tests/browser/__pycache__/
+tests/browser/tests/__pycache__/

@@ -23,6 +23,7 @@ Documentation must distinguish **implemented behavior**, **release evidence**, a
 |---|---|
 | [`TECH_BASELINE.md`](TECH_BASELINE.md) | Historical framework/runtime baseline and upgrade policy |
 | [`DOCKER_DEVELOPMENT.md`](DOCKER_DEVELOPMENT.md) | Local PostgreSQL/Redis/Laravel/Horizon/Angular topology and commands |
+| [`BROWSER_E2E_TESTING.md`](BROWSER_E2E_TESTING.md) | Python 3.14 Playwright browser acceptance architecture, commands and coding rules |
 | [`GRAPHQL_BACKEND.md`](GRAPHQL_BACKEND.md) | First-party GraphQL boundary, schema composition, security and correlation |
 | [`UI_FOUNDATION.md`](UI_FOUNDATION.md) | Aurevia visual/density primitives and accessibility conventions |
 | [`FRONTEND_WORKSPACE_NAVIGATION.md`](FRONTEND_WORKSPACE_NAVIGATION.md) | Current Angular routes and functional/placeholder workspace status |

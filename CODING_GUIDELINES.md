@@ -129,6 +129,25 @@ This checklist wins when nearby code disagrees with it. Matching an existing vio
 ## Testing
 * [ ] All public methods covered
 * [ ] Passing CI build
+* [ ] User-visible workflow changes add or update browser acceptance coverage when the behavior crosses Angular and Laravel boundaries
+
+### Browser E2E (`tests/browser/`) — Python 3.14 / Playwright
+
+* [ ] Browser tests run only against synthetic/local/CI environments
+* [ ] Python runtime is Docker-pinned to Python 3.14; do not depend on a developer's host Python
+* [ ] Playwright and pytest versions are pinned in `tests/browser/requirements.txt`
+* [ ] Prefer accessibility-facing locators such as role, label, visible name and stable semantic text
+* [ ] Do not use arbitrary sleeps; wait on a visible state, URL, response, or Playwright assertion
+* [ ] CSS/XPath selectors tied to layout or Tailwind classes are forbidden unless no semantic locator exists and the exception is documented
+* [ ] `data-testid` is allowed only for a stable application concept that cannot be selected semantically; never encode patient data in test IDs
+* [ ] Test the public browser workflow for the behavior under test; do not replace the workflow with direct database writes
+* [ ] Setup helpers may create synthetic preconditions through supported application/test boundaries, but must not bypass the authorization rule being tested
+* [ ] Browser tests that create data use unique synthetic values and must be safe to repeat in a fresh E2E database
+* [ ] Failure screenshots/traces must contain synthetic data only and are retained as short-lived CI artifacts
+* [ ] Credentials come from local synthetic defaults or environment variables; real accounts, tokens and patient data are forbidden
+* [ ] New critical workflows cover the success path plus at least one meaningful authorization, validation, or safety failure at the appropriate test layer
+
+Browser E2E complements Laravel feature/integration tests and Angular unit tests. It is not the place to exhaustively retest every domain rule through the UI.
 
 ### Unit vs integration (mandatory)
 

@@ -67,9 +67,9 @@ php artisan test
 
 Recommended later additions include Laravel Pint, PHPStan/Larastan, and mutation testing for selected safety-critical logic. Tool adoption must include CI ownership and failure policy.
 
-## 4. Frontend Baseline
+## 4. Frontend and Browser Baseline
 
-Angular 22 uses Vitest by default for new projects.
+Angular 22 uses Vitest for unit coverage.
 
 ```bash
 cd apps/web
@@ -77,7 +77,17 @@ npm test -- --watch=false
 npm run build
 ```
 
-Later add browser/component tests, Playwright end-to-end coverage, and automated accessibility tooling.
+Cross-boundary browser acceptance is implemented separately with Python 3.14, pytest, Playwright and Chromium inside Docker:
+
+```cmd
+scripts\docker.cmd e2e
+```
+
+The browser suite boots an isolated synthetic PostgreSQL/Redis/Laravel/Horizon/Angular topology, seeds the development demo workspace, drives the application through the browser, and removes its Docker volumes after the run. CI runs the same topology as the `Browser E2E` Quality job.
+
+At minimum, the standing smoke path proves that the synthetic owner can sign in, restore the authenticated clinical workspace, navigate to the patient directory, read seeded synthetic patients, and sign out. Version 2 milestones must extend browser coverage for new critical user workflows rather than replacing lower-level domain tests with UI-only assertions.
+
+See `docs/BROWSER_E2E_TESTING.md`.
 
 ## 5. Test Data Policy
 

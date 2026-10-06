@@ -11,7 +11,8 @@ if /I "%ACTION%"=="status" goto status
 if /I "%ACTION%"=="logs" goto logs
 if /I "%ACTION%"=="migrate" goto migrate
 if /I "%ACTION%"=="test" goto test
-echo Usage: scripts\docker.cmd ^<infra^|up^|build^|down^|status^|logs^|migrate^|test^>
+if /I "%ACTION%"=="e2e" goto e2e
+echo Usage: scripts\docker.cmd ^<infra^|up^|build^|down^|status^|logs^|migrate^|test^|e2e^>
 exit /b 2
 :infra
 docker compose -f "%COMPOSE_FILE%" up -d postgres redis
@@ -38,4 +39,7 @@ exit /b %ERRORLEVEL%
 docker compose -f "%COMPOSE_FILE%" --profile app exec api php artisan test
 if errorlevel 1 exit /b %ERRORLEVEL%
 docker compose -f "%COMPOSE_FILE%" --profile app exec web npm test -- --watch=false
+exit /b %ERRORLEVEL%
+:e2e
+call "%~dp0browser-e2e.cmd"
 exit /b %ERRORLEVEL%
